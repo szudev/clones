@@ -28,6 +28,10 @@ export default async function handler(
       presence_penalty: 0
     })
 
+    if (response.status !== 200) {
+      return res.status(500).json({ error: 'OPENAI API error' })
+    }
+
     return res
       .status(200)
       .json({ response: response.data.choices[0].text?.trim() })

@@ -43,7 +43,6 @@ export const useMessageStore = create<MessageState>()((set, get) => ({
       })
 
       const json = await response.json()
-      console.log({ json })
       set((state) => ({
         messages: state.messages.map((entry) => {
           if (entry.id === messageIAid) {
