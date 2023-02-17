@@ -1,11 +1,10 @@
 import { Avatar } from '@/components/Avatar'
 import { ChatGPTLogo, PlusIcon, SendIcon } from '@/components/Icons'
+import TypingEffect from '@/components/TypingEffect'
 import Head from 'next/head'
-import { ReactNode } from 'react'
-
-type LayoutProps = {
-  children: ReactNode
-}
+import { LayoutProps } from '@/types/props.type'
+import { useMessageStore } from '@/store/messages'
+import React, { MutableRefObject, useRef } from 'react'
 
 function Layout({ children }: LayoutProps) {
   return (
@@ -26,7 +25,7 @@ function Layout({ children }: LayoutProps) {
 
 function Aside() {
   return (
-    <aside className='bg-gptdarkgray md:w-[260px] w-full p-2 fixed md:relative'>
+    <aside className='bg-gptdarkgray md:max-w-[260px] w-full p-2 fixed md:relative'>
       <nav className='flex flex-col flex-1 h-full space-y-1'>
         <a className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'>
           <PlusIcon />
@@ -40,7 +39,7 @@ function Aside() {
 const UserAvatar = () => {
   return (
     <img
-      src='https://chat.openai.com/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAEdFTp5aKpllWAjJz_sR85T4q0ZA6z6lKHmSsHfbOK3D%3Ds96-c&w=32&q=75'
+      src='https://lh3.googleusercontent.com/ogw/AAEL6sgqIlhJnYOuYmxeDcSq0pFGyqDmp4CiavLbpUW_=s32-c-mo'
       alt='imagen de usuario'
       className='rounded-sm'
     />
@@ -49,13 +48,18 @@ const UserAvatar = () => {
 
 function Message({ ia, message }: ChatMessage) {
   const avatar = ia ? <ChatGPTLogo /> : <UserAvatar />
+  const textElement = ia ? <TypingEffect text={message} /> : message
   return (
-    <div className={`text-gray-100 ${ia ? 'bg-gptlightgray' : 'bg-gptgray'}`}>
+    <div
+      className={`text-gray-100 border-b border-black/10 ${
+        ia ? 'bg-gptlightgray' : 'bg-gptgray'
+      }`}
+    >
       <article className='flex gap-4 m-auto max-w-3xl p-6'>
         <Avatar>{avatar}</Avatar>
         <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap flex-1'>
-          <div className='prose-invert w-full break-words light'>
-            <p>{message}</p>
+          <div className='prose-invert w-full break-words light leading-7 text-justify'>
+            {textElement}
           </div>
         </div>
       </article>
@@ -69,20 +73,7 @@ interface ChatMessage {
 }
 
 function Chat() {
-  const messages: ChatMessage[] = [
-    {
-      id: 1,
-      ia: false,
-      message: 'Explain nodejs'
-    },
-    {
-      id: 2,
-      ia: true,
-      message:
-        'JSON (JavaScript Object Notation) is a lightweight data-interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is a text-based format that uses a simple syntax to describe data objects and arrays, consisting of key-value pairs, and is commonly used for asynchronous browser/server communication and data storage. JSON is used to represent data structures and objects in a standard, easily readable format.'
-    }
-  ]
-
+  const messages = useMessageStore((state) => state.messages)
   return (
     <div className='bg-gptgray w-full min-h-screen justify-between flex flex-col pt-[70px] md:pt-0'>
       <main className='flex flex-col'>
@@ -96,11 +87,46 @@ function Chat() {
 }
 
 function ChatForm() {
+  const sendPrompt = useMessageStore((state) => state.sendPrompt)
+  const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
+
+  const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault()
+    const { value } = textAreaRef.current
+    sendPrompt({ prompt: value })
+    textAreaRef.current.value = ''
+  }
+
+  const handleChange = () => {
+    const element = textAreaRef.current
+    const scrollHeight = element.scrollHeight
+    element.style.height = scrollHeight + 'px'
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault()
+      handleSubmit()
+    }
+  }
+
   return (
     <section className='flex justify-center items-center'>
-      <form className='flex flex-row max-w-3xl pt-6 w-full mb-6 px-2 md:px-6'>
+      <form
+        className='flex flex-row max-w-3xl pt-6 w-full mb-6 px-2 md:px-6'
+        onSubmit={handleSubmit}
+        onKeyDown={handleKeyDown}
+      >
         <div className='relative flex flex-col flex-grow w-full px-4 py-3 text-white border rounded-md shadow-lg bg-gptlightgray border-gray-900/50'>
-          <textarea className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none' />
+          <textarea
+            ref={textAreaRef}
+            onChange={handleChange}
+            rows={1}
+            tabIndex={0}
+            autoFocus
+            defaultValue=''
+            className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
+          />
           <button className='absolute p-1 rounded-md bottom-2.5 right-2.5'>
             <SendIcon />
           </button>
