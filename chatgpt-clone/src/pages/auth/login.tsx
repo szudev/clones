@@ -1,5 +1,6 @@
 import { ChatGPTLogoLogin } from '@/components/Icons'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
+import { GetServerSidePropsContext } from 'next'
 
 function SignedOut() {
   return (
@@ -22,25 +23,22 @@ function SignedOut() {
   )
 }
 
-function SignedIn({ email }: { email: string | null | undefined }) {
+export default function Login() {
   return (
-    <div className='flex flex-col p-4 gap-3 text-white'>
-      <p>Welcome back, {email}</p>
-      <button className='btn relative btn-primary' onClick={() => signOut()}>
-        <div className='flex w-full items-center justify-center gap-2'>
-          Logout
-        </div>
-      </button>
-    </div>
+    <section className='flex min-h-screen bg-gptgray justify-center items-center'>
+      <SignedOut />
+    </section>
   )
 }
 
-export default function Login() {
-  const { data: session } = useSession()
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getSession(ctx)
+  if (session)
+    return {
+      redirect: {
+        destination: '/'
+      }
+    }
 
-  return (
-    <section className='flex min-h-screen bg-gptgray justify-center items-center'>
-      {session ? <SignedIn email={session.user?.email} /> : <SignedOut />}
-    </section>
-  )
+  return { props: {} }
 }

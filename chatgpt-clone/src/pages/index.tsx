@@ -1,5 +1,7 @@
 import Layout from '@/components/Layout'
 import Chat from '@/components/Chat'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { getSession } from 'next-auth/react'
 
 export default function Home() {
   return (
@@ -9,4 +11,15 @@ export default function Home() {
       </Layout>
     </>
   )
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  const session = await getSession(ctx)
+  if (!session)
+    return {
+      redirect: {
+        destination: '/auth/login'
+      }
+    }
+  return { props: { session } }
 }
