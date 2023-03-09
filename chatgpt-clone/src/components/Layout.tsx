@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Aside from './Aside'
 import { LayoutProps } from '@/types/props.type'
+import ChatForm from './ChatForm'
 
 export default function Layout({ children }: LayoutProps) {
   return (
@@ -13,7 +14,10 @@ export default function Layout({ children }: LayoutProps) {
       </Head>
       <div className='flex flex-col min-h-screen md:flex-row'>
         <Aside />
-        {children}
+        <div className='bg-gptgray w-full h-screen justify-between flex flex-col pt-[70px] md:pt-0'>
+          {children}
+          <ChatForm />
+        </div>
       </div>
     </>
   )

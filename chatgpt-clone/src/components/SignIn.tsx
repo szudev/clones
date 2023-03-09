@@ -10,10 +10,13 @@ export default function SignIn() {
         </figure>
         <div className='text-center'>Welcome to ChatGPT</div>
         <div className='text-center'>
-          Log in with your OpenAI account to continue
+          Log in with your Google account to continue
         </div>
         <div className='flex justify-center'>
-          <button className='btn relative btn-primary' onClick={() => signIn()}>
+          <button
+            className='btn relative btn-primary'
+            onClick={() => signIn('google')}
+          >
             <div className='flex w-full items-center justify-center gap-2'>
               Log in
             </div>
