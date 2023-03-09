@@ -1,6 +1,6 @@
 import Layout from '@/components/Layout'
 import Chat from '@/components/Chat'
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import { GetServerSidePropsContext } from 'next'
 import { getSession } from 'next-auth/react'
 
 export default function Home() {
