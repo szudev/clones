@@ -2,26 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn {
-  align-items: center;
-  border-color: transparent;
-  border-radius: 0.25rem;
-  border-width: 1px;
-  display: inline-flex;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  padding: 0.5rem 0.75rem;
-  pointer-events: auto;
-}
-
-.btn-primary {
-  --tw-bg-opacity: 1;
-  --tw-text-opacity: 1;
-  background-color: rgba(16, 163, 127, var(--tw-bg-opacity));
-  color: rgba(255, 255, 255, var(--tw-text-opacity));
-}
-
-.btn-primary:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgba(26, 127, 100, var(--tw-bg-opacity));
+@layer components {
+  .btn {
+    @apply items-center border-transparent rounded border inline-flex text-sm py-2 px-3 pointer-events-auto;
+  }
+  .btn-primary {
+    @apply bg-gptlogo text-white;
+  }
+  .btn-primary:hover {
+    @apply bg-[rgba(26,127,100,1)];
+  }
 }
