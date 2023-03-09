@@ -1,9 +1,7 @@
-import { useSession, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 import { PlusIcon, LogOutIcon } from './Icons'
 
 export default function Aside() {
-  const { data: session } = useSession()
-
   return (
     <aside className='bg-gptdarkgray md:max-w-[260px] w-full p-2 fixed md:relative'>
       <nav className='flex flex-col flex-1 h-full space-y-1 justify-between'>
