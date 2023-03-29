@@ -3,7 +3,7 @@ import { signIn } from 'next-auth/react'
 
 export default function SignIn() {
   return (
-    <section className='flex min-h-screen bg-gptgray justify-center items-center'>
+    <section className='flex h-screen bg-gptgray justify-center items-center'>
       <div className='flex flex-col p-4 text-white gap-3'>
         <figure className='flex justify-center items-center pb-2'>
           <ChatGPTLogoLogin />
