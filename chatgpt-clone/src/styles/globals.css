@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 @layer components {
   .btn {
     @apply items-center border-transparent rounded border inline-flex text-sm py-2 px-3 pointer-events-auto;

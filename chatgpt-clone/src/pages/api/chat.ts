@@ -22,7 +22,7 @@ export default async function handler(
       model: 'text-davinci-003',
       prompt: `Simulate that you are the conversational AI of ChatGPT and give an answer to the follow prompt:\n\n${prompt}`,
       temperature: 0.7,
-      max_tokens: 256,
+      max_tokens: 1000,
       top_p: 1,
       frequency_penalty: 0,
       presence_penalty: 0

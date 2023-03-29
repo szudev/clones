@@ -1,11 +1,12 @@
-import Layout from '@/components/Layout'
-import { GetServerSidePropsContext } from 'next'
+import { useMessageStore } from '@/store/messages'
+import Message from '@/components/Message'
 import { getServerSession } from 'next-auth'
-import LandingInfo from '@/components/LandingInfo'
-import { authOptions } from '../api/auth/[...nextauth]'
+import { GetServerSidePropsContext } from 'next'
+import Layout from '@/components/Layout'
+import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { ChatsType } from '@/store/chats'
 import useStateSetter from '@/hooks/useStateSetter'
-import { getChats } from '@/lib/prisma/chat'
+import { Chat as ChatType } from '@prisma/client'
 
 type HomeChatProps = {
   email: string
@@ -13,25 +14,26 @@ type HomeChatProps = {
   errorMessage: string | null
 }
 
-export default function HomeChat({
+export default function Chat({
   email,
   retrievedChats,
   errorMessage
 }: HomeChatProps) {
+  const messages = useMessageStore((state) => state.messages)
   useStateSetter({ email, retrievedChats, errorMessage })
 
   return (
     <Layout>
-      <LandingInfo />
+      <main className='flex flex-col overflow-y-auto'>
+        {messages.map((entry) => (
+          <Message key={entry.id} {...entry} />
+        ))}
+      </main>
     </Layout>
   )
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  ctx.res.setHeader(
-    'Cache-control',
-    'public, smaxage=10, stale-while-revalidate=59'
-  )
   const session = await getServerSession(ctx.req, ctx.res, authOptions)
   if (!session) {
     return {
@@ -41,8 +43,20 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     }
   }
   const email = session?.user?.email!
+  const { id } = ctx.query
+  if (!id) return { notFound: true }
   try {
-    const { chats } = await getChats({ email })
+    const response = await fetch(
+      `${process.env.API_ENDPOINT}/api/chats?email=${email}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    )
+    const { chats } = (await response.json()) as { chats: ChatType[] }
+    if (!chats.some((chat) => chat.id === id)) return { notFound: true }
     return { props: { email, retrievedChats: chats, errorMessage: null } }
   } catch (error) {
     return {

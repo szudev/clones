@@ -1,4 +1,5 @@
-import { getSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../api/auth/[...nextauth]'
 import { GetServerSidePropsContext } from 'next'
 import SignIn from '@/components/SignIn'
 
@@ -7,7 +8,7 @@ export default function Login() {
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const session = await getSession(ctx)
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
   if (session)
     return {
       redirect: {

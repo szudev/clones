@@ -1,20 +1,19 @@
+import LandingInfo from '@/components/LandingInfo'
 import Layout from '@/components/Layout'
-import Chat from '@/components/Chat'
 import { GetServerSidePropsContext } from 'next'
-import { getSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth'
+import { authOptions } from './api/auth/[...nextauth]'
 
 export default function Home() {
   return (
-    <>
-      <Layout>
-        <Chat />
-      </Layout>
-    </>
+    <Layout>
+      <LandingInfo />
+    </Layout>
   )
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const session = await getSession(ctx)
+  const session = await getServerSession(ctx.req, ctx.res, authOptions)
   if (!session) {
     return {
       redirect: {
