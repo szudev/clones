@@ -48,7 +48,6 @@ export const useChatStore = create<ChatState>()((set, get) => ({
       }))
       return json.chat.id as string
     } catch (error) {
-      console.log(error)
       set({ errorClient: error as string, clientLoading: false })
     }
   },
