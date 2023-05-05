@@ -3,7 +3,8 @@ import { PlusIcon, LogOutIcon, CloseSideBarIcon } from './Icons'
 import ServerLoading from './ServerLoading'
 import Chat from './Chat'
 import { signOut } from 'next-auth/react'
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
+import { NextRouter } from 'next/router'
 
 interface Props {
   handleNewChatClick: () => void
@@ -14,6 +15,7 @@ interface Props {
   chats: TChat[] | undefined
   responsiveSideBar: boolean
   setResponsiveSideBar: Dispatch<SetStateAction<boolean>>
+  router: NextRouter
 }
 
 export default function ResponsiveMenu({
@@ -24,15 +26,20 @@ export default function ResponsiveMenu({
   isFetched,
   chats,
   responsiveSideBar,
-  setResponsiveSideBar
+  setResponsiveSideBar,
+  router
 }: Props) {
   const handleCloseResponsiveSideBarClick = () => {
     setResponsiveSideBar((prevState) => !prevState)
   }
   const handleNewChatMutationResponsive = () => {
     handleNewChatClick()
-    setResponsiveSideBar((prevState) => !prevState)
   }
+
+  useEffect(() => {
+    router.events.on('routeChangeComplete', () => setResponsiveSideBar(false))
+  }, [router])
+
   return (
     <aside
       className={`bg-gptdarkgray z-[9999] transition-all h-full duration-300 min-w-full w-full absolute block top-0 md:hidden ${

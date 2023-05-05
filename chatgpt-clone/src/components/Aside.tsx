@@ -15,7 +15,8 @@ export default function Aside() {
     isFetched,
     error,
     newChatMutation,
-    isLoadingMutation
+    isLoadingMutation,
+    router
   } = useChats()
 
   const handleNewChatClick = () => {
@@ -86,6 +87,7 @@ export default function Aside() {
         isLoading={isLoading}
         responsiveSideBar={responsiveSideBar}
         setResponsiveSideBar={setResponsiveSideBar}
+        router={router}
       />
     </>
   )

@@ -51,6 +51,7 @@ export default function useChats() {
     isFetched,
     error,
     newChatMutation,
-    isLoadingMutation
+    isLoadingMutation,
+    router
   }
 }

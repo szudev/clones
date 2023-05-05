@@ -1,4 +1,3 @@
-import { Chat } from '@prisma/client'
 import { ReactNode } from 'react'
 
 export type TypingEffectProps = {
