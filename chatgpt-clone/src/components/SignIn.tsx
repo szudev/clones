@@ -17,7 +17,7 @@ export default function SignIn() {
             className='btn relative btn-primary'
             onClick={() => signIn('google')}
           >
-            <div className='flex w-full items-center justify-center gap-2'>
+            <div className='flex w-full items-center justify-center gap-2 font-semibold'>
               Log in
             </div>
           </button>

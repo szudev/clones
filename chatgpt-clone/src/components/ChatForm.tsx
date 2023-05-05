@@ -36,12 +36,13 @@ export default function ChatForm() {
       >
         <div className='relative flex flex-col flex-grow w-full px-4 py-3 text-white border rounded-md shadow-lg bg-gptlightgray border-gray-900/50'>
           <textarea
+            autoFocus
             ref={textAreaRef}
             onChange={handleChange}
             rows={1}
             tabIndex={0}
-            autoFocus
             defaultValue=''
+            placeholder='Send a message.'
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
           <button className='absolute p-1 rounded-md bottom-2.5 right-2.5'>

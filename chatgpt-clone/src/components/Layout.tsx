@@ -12,9 +12,9 @@ export default function Layout({ children }: LayoutProps) {
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='flex flex-col min-h-screen md:flex-row'>
+      <div className='flex flex-1 flex-col min-h-screen max-h-screen md:flex-row'>
         <Aside />
-        <div className='bg-gptgray w-full h-screen justify-between flex flex-col pt-[70px] md:pt-0'>
+        <div className='bg-gptgray w-full overflow-hidden flex-1 justify-between flex flex-col'>
           {children}
           <ChatForm />
         </div>
