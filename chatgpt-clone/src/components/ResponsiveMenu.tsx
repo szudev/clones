@@ -29,15 +29,30 @@ export default function ResponsiveMenu({
   const handleCloseResponsiveSideBarClick = () => {
     setResponsiveSideBar((prevState) => !prevState)
   }
+  const handleNewChatMutationResponsive = () => {
+    handleNewChatClick()
+    setResponsiveSideBar((prevState) => !prevState)
+  }
   return (
     <aside
-      className={`bg-gptdarkgray z-[9999] transition-all duration-300 min-w-full w-full absolute h-full block top-0 md:hidden ${
+      className={`bg-gptdarkgray z-[9999] transition-all h-full duration-300 min-w-full w-full absolute block top-0 md:hidden ${
         responsiveSideBar ? 'left-0 opacity-100' : '-left-full opacity-0'
       }`}
     >
       <nav className='flex h-full flex-1 flex-col space-y-1 p-2'>
+        <div className='flex justify-end'>
+          <button
+            type='button'
+            className='ml-1 flex h-10 w-10 items-center justify-center focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'
+            tabIndex={0}
+            onClick={handleCloseResponsiveSideBarClick}
+          >
+            <span className='sr-only'>Close sidebar</span>
+            <CloseSideBarIcon />
+          </button>
+        </div>
         <a
-          onClick={handleNewChatClick}
+          onClick={handleNewChatMutationResponsive}
           className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'
         >
           <PlusIcon />
