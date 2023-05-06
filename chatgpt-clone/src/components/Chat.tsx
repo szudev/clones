@@ -13,7 +13,7 @@ export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
     <Link
       href={`/chat/${chatId}`}
       className={`${
-        dynamicPath === chatId ? 'bg-gptgray pr-9' : 'hover:bg-[#2A2B32] group'
+        dynamicPath === chatId ? 'bg-gptgray pr-9' : 'hover:bg-[#2A2B32]'
       } flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all group`}
     >
       <ChatIcon />
