@@ -50,7 +50,12 @@ export default function Aside() {
                 !isError &&
                 chats &&
                 chats.map((chat) => (
-                  <Chat key={chat.id} chatId={chat.id} chatTitle={chat.title} />
+                  <Chat
+                    key={chat.id}
+                    chatId={chat.id}
+                    chatTitle={chat.title}
+                    dynamicPath={router.query.id}
+                  />
                 ))}
             </div>
           </div>

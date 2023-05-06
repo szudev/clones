@@ -37,7 +37,7 @@ export default function useChats() {
         if (oldData == null) return [newChat]
         return [...oldData, newChat]
       })
-      router.push(`/chat/${newChat.id}`, undefined, { shallow: true })
+      router.push(`/chat/${newChat.id}`)
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['chats'] })
