@@ -1,3 +1,4 @@
+import { TrashIcon } from './Icons'
 import { ChatIcon } from './Icons'
 import Link from 'next/link'
 
@@ -12,13 +13,28 @@ export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
     <Link
       href={`/chat/${chatId}`}
       className={`${
-        dynamicPath === chatId ? 'bg-gptgray' : 'hover:bg-[#2A2B32]'
+        dynamicPath === chatId ? 'bg-gptgray pr-9' : 'hover:bg-[#2A2B32] group'
       } flex py-3 px-3 items-center gap-3 relative rounded-md cursor-pointer break-all group`}
     >
       <ChatIcon />
       <div className='flex-1 text-ellipsis max-h-5 overflow-hidden break-all relative'>
         {chatTitle}
-        <div className='absolute inset-y-0 right-0 w-8 z-10 group-hover:from-[#2A2B32]'></div>
+        <div
+          className={`absolute inset-y-0 right-0 w-8 z-10 bg-gradient-to-l ${
+            dynamicPath === chatId
+              ? 'from-[#343541]'
+              : 'from-[#202123] group-hover:from-[#2A2B32]'
+          }`}
+        ></div>
+      </div>
+      <div
+        className={`${
+          dynamicPath === chatId ? 'visible' : 'invisible'
+        } absolute flex right-1 z-10 text-gray-300`}
+      >
+        <button className='p-1 hover:text-white'>
+          <TrashIcon />
+        </button>
       </div>
     </Link>
   )
