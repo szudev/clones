@@ -2,25 +2,24 @@ import { signOut } from 'next-auth/react'
 import { PlusIcon, LogOutIcon, BurgerMenu, NavPlusIcon } from './Icons'
 import ServerLoading from './ServerLoading'
 import Chat from './Chat'
-import useChats from '@/hooks/useChats'
 import { useState } from 'react'
 import ResponsiveMenu from './ResponsiveMenu'
+import useChatsqueries from '@/hooks/chats/useChatsQueries'
+import { useNewChatMutation } from '@/hooks/chats/useChatsMutations'
 
 export default function Aside() {
   const [responsiveSideBar, setResponsiveSideBar] = useState(false)
+  const { chats, isChatsLoading, isChatsError, isChatsFetched, chatsError } =
+    useChatsqueries()
   const {
-    chats,
-    isLoading,
-    isError,
-    isFetched,
-    error,
     newChatMutation,
-    isLoadingMutation,
+    isCreateNewChatMutationLoading,
+    isCreateNewChatErrorMutation,
     router
-  } = useChats()
+  } = useNewChatMutation()
 
   const handleNewChatClick = () => {
-    if (isLoadingMutation) return
+    if (isCreateNewChatMutationLoading) return
     newChatMutation()
   }
 
@@ -41,13 +40,13 @@ export default function Aside() {
           </a>
           <div className='flex-col flex-1 overflow-y-auto border-b border-white/20 -mr-2'>
             <div className='flex flex-col text-gray-100 h-full text-sm pr-2 mb-5'>
-              {isLoading && <ServerLoading />}
-              {!isLoading && isError && (
-                <p className='text-white'>{error?.message}</p>
+              {isChatsLoading && <ServerLoading />}
+              {!isChatsLoading && isChatsError && (
+                <p className='text-white'>{chatsError?.message}</p>
               )}
-              {!isLoading &&
-                isFetched &&
-                !isError &&
+              {!isChatsLoading &&
+                isChatsFetched &&
+                !isChatsError &&
                 chats &&
                 chats.map((chat) => (
                   <Chat
@@ -86,10 +85,10 @@ export default function Aside() {
       <ResponsiveMenu
         handleNewChatClick={handleNewChatClick}
         chats={chats}
-        error={error}
-        isError={isError}
-        isFetched={isFetched}
-        isLoading={isLoading}
+        error={chatsError}
+        isError={isChatsError}
+        isFetched={isChatsFetched}
+        isLoading={isChatsLoading}
         responsiveSideBar={responsiveSideBar}
         setResponsiveSideBar={setResponsiveSideBar}
         router={router}
