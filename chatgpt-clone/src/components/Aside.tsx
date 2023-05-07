@@ -39,7 +39,7 @@ export default function Aside() {
             New chat
           </a>
           <div className='flex-col flex-1 overflow-y-auto border-b border-white/20 -mr-2'>
-            <div className='flex flex-col text-gray-100 h-full text-sm pr-2 mb-5'>
+            <div className='flex flex-col text-gray-100 h-full text-sm pr-2'>
               {isChatsLoading && <ServerLoading />}
               {!isChatsLoading && isChatsError && (
                 <p className='text-white'>{chatsError?.message}</p>
