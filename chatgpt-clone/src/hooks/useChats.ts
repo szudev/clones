@@ -1,24 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { getChatsByEmail, createNewChat } from '@/services/chats'
-import { getSession } from 'next-auth/react'
 import { Chat } from '@prisma/client'
 import { useRouter } from 'next/router'
+import { getAllChatsQuery } from './chats/queries'
+import { createNewChatMutation } from './chats/mutations'
 
 export default function useChats() {
   const { data, isLoading, isError, isFetched, error } = useQuery<
     Chat[],
     Error
-  >(
-    ['chats'],
-    async () => {
-      const session = await getSession()
-      const email = session?.user?.email!
-      return await getChatsByEmail({ email })
-    },
-    {
-      refetchOnWindowFocus: false
-    }
-  )
+  >(['chats'], getAllChatsQuery, {
+    refetchOnWindowFocus: false
+  })
   const router = useRouter()
   const queryClient = useQueryClient()
 
@@ -27,11 +19,7 @@ export default function useChats() {
     isLoading: isLoadingMutation,
     isError: isErrorMutation
   } = useMutation({
-    mutationFn: async () => {
-      const session = await getSession()
-      const email = session?.user?.email!
-      return await createNewChat({ email })
-    },
+    mutationFn: createNewChatMutation,
     onSuccess: (newChat: Chat) => {
       queryClient.setQueryData(['chats'], (oldData?: Chat[]) => {
         if (oldData == null) return [newChat]

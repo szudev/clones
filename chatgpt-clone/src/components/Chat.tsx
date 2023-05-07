@@ -1,3 +1,4 @@
+import { useDeleteChatMutation } from '@/hooks/chats/useChatsMutations'
 import { TrashIcon } from './Icons'
 import { ChatIcon } from './Icons'
 import Link from 'next/link'
@@ -9,6 +10,12 @@ type ChatProps = {
 }
 
 export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
+  const { removeChatMutation } = useDeleteChatMutation()
+
+  const handleRemoveChatClick = () => {
+    removeChatMutation(chatId)
+  }
+
   return (
     <Link
       href={`/chat/${chatId}`}
@@ -32,7 +39,10 @@ export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
           dynamicPath === chatId ? 'visible' : 'invisible'
         } absolute flex right-1 z-10 text-gray-300`}
       >
-        <button className='p-1 hover:text-white'>
+        <button
+          className='p-1 hover:text-white'
+          onClick={handleRemoveChatClick}
+        >
           <TrashIcon />
         </button>
       </div>

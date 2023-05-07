@@ -30,13 +30,13 @@ model Message {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   message String
   answer Answer?
-  chat Chat @relation(fields: [chatId], references: [id])
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
   chatId String @db.ObjectId
 }
 
 model Answer {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   answer String
-  message Message @relation(fields: [messageId], references: [id])
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
   messageId String @unique @db.ObjectId
 }

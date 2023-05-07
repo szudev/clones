@@ -4,6 +4,11 @@ type EmailProp = {
   email: string
 }
 
+type DeleteChatProps = {
+  chatId: string
+  email: string
+}
+
 export async function createNewChat({ email }: EmailProp) {
   try {
     const user = await prisma.user.findUnique({
@@ -82,5 +87,25 @@ export async function getChats({ email }: EmailProp) {
     return { chats }
   } catch (error) {
     throw error
+  }
+}
+
+export async function deleteChat({ chatId, email }: DeleteChatProps) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email
+      }
+    })
+    if (!user) throw new Error('User does not exist.')
+    const deletedChat = await prisma.chat.delete({
+      where: {
+        id: chatId
+      }
+    })
+
+    return { deletedChat }
+  } catch (error) {
+    return { error }
   }
 }
