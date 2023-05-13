@@ -1,14 +1,14 @@
 <div align="center">
 <strong>CHATGPT CLON</strong>
 <br />
-<label style="color:red">ACTUALMENTE LA OPENIA SECRET KEY ESTÁ CADUCADA</label>
+<span style="color: red;">🚩 ACTUALMENTE LA OPENIA SECRET KEY ESTÁ CADUCADA</span>
 </div>
 
-## - 💼 Acerca del proyecto:
+## 💼 Acerca del proyecto:
 
     Un proyecto clon de CHATGPT para realizar consultas a la OPENIA realizado con Typescript.
 
-## - 💻 Herramientas utilizadas:
+## 💻 Herramientas utilizadas:
 
     Front:
     - Nextjs: Framework de react.
@@ -21,7 +21,7 @@
     - Mongodb: Base de datos no relacional.
     - Prisma: ORM para la comunicación entre la base de datos y la API.
 
-## - 👀 Por hacer:
+## 👀 Por hacer:
 
     - Generar la QUERY con prisma para guardar la respuesta de la IA.
     - Generar y guardar las respuestas de la IA que retorna la API de OPENIA en la base de datos.
