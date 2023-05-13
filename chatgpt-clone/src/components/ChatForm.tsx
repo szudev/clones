@@ -1,20 +1,24 @@
 import { useMessageStore } from '@/store/messages'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { MutableRefObject } from 'react'
 import { SendIcon } from './Icons'
 
 export default function ChatForm() {
   const sendPrompt = useMessageStore((state) => state.sendPrompt)
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
+  const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
     const { value } = textAreaRef.current
+    if (value === '') return
     sendPrompt({ prompt: value })
     textAreaRef.current.value = ''
   }
 
   const handleChange = () => {
+    const textareaValue = textAreaRef.current.value
+    setTextAreaEmpty(textareaValue.trim() === '')
     const element = textAreaRef.current
     element.style.height = '0px'
     const scrollHeight = element.scrollHeight
@@ -22,11 +26,12 @@ export default function ChatForm() {
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey) {
+    if (event.key === 'Enter' && !event.shiftKey && !isTextAreaEmpty) {
       event.preventDefault()
       handleSubmit()
     }
   }
+
   return (
     <section className='flex justify-center items-center'>
       <form
@@ -45,7 +50,10 @@ export default function ChatForm() {
             placeholder='Send a message.'
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
-          <button className='absolute p-1 rounded-md bottom-2.5 right-2.5'>
+          <button
+            disabled={isTextAreaEmpty}
+            className='disabled:opacity-40 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
+          >
             <SendIcon />
           </button>
         </div>

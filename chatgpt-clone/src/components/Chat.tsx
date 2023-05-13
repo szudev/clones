@@ -10,9 +10,11 @@ type ChatProps = {
 }
 
 export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
-  const { removeChatMutation } = useDeleteChatMutation()
+  const { removeChatMutation, isDeleteChatMutationLoading } =
+    useDeleteChatMutation()
 
   const handleRemoveChatClick = () => {
+    if (isDeleteChatMutationLoading) return
     removeChatMutation(chatId)
   }
 

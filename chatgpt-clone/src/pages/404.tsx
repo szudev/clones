@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 export default function Custom404() {
   const router = useRouter()
   const handleOnClick = () => {
-    router.push('chat')
+    router.push('/chat')
   }
   return (
     <div className='text-center flex flex-col items-center justify-center min-h-screen bg-gptgray text-white p-4'>
