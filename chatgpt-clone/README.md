@@ -1,5 +1,6 @@
 <div align="center">
 <strong>CHATGPT CLON</strong>
+<label style="color:red">ACTUALMENTE LA OPENIA SECRET KEY ESTÁ CADUCADA</label>
 </div>
 
 ## - 💼 Acerca del proyecto:
