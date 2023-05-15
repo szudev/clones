@@ -11,7 +11,7 @@
 ## 💻 Herramientas utilizadas:
 
     Front:
-    - Nextjs: Framework de react.
+    - Nextjs: Framework de react versión 12.
     - Tailwind: CSS inline para el diseño de la aplicación.
     - Tanstack Query: Gestión de estados asíncronos. <-- Permanente
     - Zustand: Gestión de estados. <-- Temporalmente

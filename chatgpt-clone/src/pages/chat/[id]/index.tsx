@@ -1,33 +1,25 @@
-import { useMessageStore } from '@/store/messages'
 import Message from '@/components/Message'
 import { getServerSession } from 'next-auth'
 import { GetServerSidePropsContext } from 'next'
 import Layout from '@/components/Layout'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
-import { ChatsType } from '@/store/chats'
-import useStateSetter from '@/hooks/useStateSetter'
 import { Chat as ChatType } from '@prisma/client'
+import useMessagesQuery from '@/hooks/messages/useMessagesQueries'
+import ServerLoading from '@/components/ServerLoading'
 
-type HomeChatProps = {
-  email: string
-  retrievedChats: ChatsType[]
-  errorMessage: string | null
-}
-
-export default function Chat({
-  email,
-  retrievedChats,
-  errorMessage
-}: HomeChatProps) {
-  const messages = useMessageStore((state) => state.messages)
-  useStateSetter({ email, retrievedChats, errorMessage })
-
+export default function Chat() {
+  const { messages, isMessagesLoading } = useMessagesQuery()
   return (
     <Layout>
-      <main className='flex flex-col overflow-y-auto'>
-        {messages.map((entry) => (
-          <Message key={entry.id} {...entry} />
-        ))}
+      <main className='flex flex-col overflow-y-auto h-full'>
+        {isMessagesLoading && (
+          <div className='flex justify-center items-center h-full'>
+            <ServerLoading />
+          </div>
+        )}
+        {!isMessagesLoading && messages
+          ? messages.map((entry) => <Message key={entry.id} {...entry} />)
+          : null}
       </main>
     </Layout>
   )
@@ -57,14 +49,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     )
     const { chats } = (await response.json()) as { chats: ChatType[] }
     if (!chats.some((chat) => chat.id === id)) return { notFound: true }
-    return { props: { email, retrievedChats: chats, errorMessage: null } }
+    return { props: {} }
   } catch (error) {
     return {
-      props: {
-        email,
-        retrievedChats: [],
-        errorMessage:
-          'History is temporarily unavailable. We are working to restore this feature as soon as possible.'
+      props: {},
+      notFound: false,
+      redirect: {
+        destination: '/500',
+        permanent: false
       }
     }
   }

@@ -52,7 +52,7 @@ export default function ChatForm() {
           />
           <button
             disabled={isTextAreaEmpty}
-            className='disabled:opacity-40 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
+            className='disabled:opacity-40 enabled:hover:bg-gray-900 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
           >
             <SendIcon />
           </button>
