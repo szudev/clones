@@ -11,9 +11,9 @@ export default function Chat() {
   const { messages, isMessagesLoading } = useMessagesQuery()
   return (
     <Layout>
-      <main className='flex flex-col overflow-y-auto h-full'>
+      <main className='flex flex-col overflow-y-auto flex-1'>
         {isMessagesLoading && (
-          <div className='flex justify-center items-center h-full'>
+          <div className='flex justify-center items-center flex-1'>
             <ServerLoading />
           </div>
         )}

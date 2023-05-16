@@ -16,7 +16,7 @@ export default function ChatForm() {
     if (createMessagemutation) {
       createMessagemutation({
         prompt: value,
-        chatId: '64630eecc491e78c5460957a',
+        chatId: '64631f36714cc19bcfe86ce5',
         answer:
           ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus doloremque corrupti quibusdam tempora voluptas cupiditate aperiam eligendi, dolor iure illo ullam in voluptates tenetur debitis rem obcaecati ad quo laudantium!'
       })
