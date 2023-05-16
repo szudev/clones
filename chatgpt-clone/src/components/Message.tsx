@@ -18,7 +18,7 @@ export default function Message({ message, answer }: IMessageApiResponse) {
     message
   )
   return (
-    <>
+    <div>
       <div className='text-gray-100 border-b border-black/10 bg-gptgray'>
         <article className='flex gap-4 m-auto max-w-3xl p-6'>
           <Avatar>
@@ -38,11 +38,15 @@ export default function Message({ message, answer }: IMessageApiResponse) {
           </Avatar>
           <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap flex-1'>
             <div className='prose-invert w-full break-words light leading-7 text-justify'>
-              {answer ? answer.answer : <p>Unexpected error.</p>}
+              {answer ? (
+                <TypingEffect text={answer.answer} />
+              ) : (
+                <p>Unexpected error.</p>
+              )}
             </div>
           </div>
         </article>
       </div>
-    </>
+    </div>
   )
 }

@@ -1,18 +1,26 @@
-import { useMessageStore } from '@/store/messages'
 import { useRef, useState } from 'react'
 import { MutableRefObject } from 'react'
 import { SendIcon } from './Icons'
+import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
 
 export default function ChatForm() {
-  const sendPrompt = useMessageStore((state) => state.sendPrompt)
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
   const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
+  const { createMessagemutation, isCreateMessageMutationLoading } =
+    useNewMessageMutation()
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
     const { value } = textAreaRef.current
     if (value === '') return
-    sendPrompt({ prompt: value })
+    if (createMessagemutation) {
+      createMessagemutation({
+        prompt: value,
+        chatId: '64630eecc491e78c5460957a',
+        answer:
+          ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus doloremque corrupti quibusdam tempora voluptas cupiditate aperiam eligendi, dolor iure illo ullam in voluptates tenetur debitis rem obcaecati ad quo laudantium!'
+      })
+    }
     textAreaRef.current.value = ''
   }
 

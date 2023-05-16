@@ -36,7 +36,6 @@ export default async function handler(
       .status(200)
       .json({ response: response.data.choices[0].text?.trim() })
   } catch (error) {
-    console.error({ error })
     return res.status(500).json({ error })
   }
 }

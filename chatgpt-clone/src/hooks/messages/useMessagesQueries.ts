@@ -8,7 +8,8 @@ export default function useMessagesQuery() {
   const chatId = router.query.id
   const { data, isLoading } = useQuery<IMessageApiResponse[]>({
     queryKey: ['messages', chatId],
-    queryFn: () => getMessagesQuery(chatId as string)
+    queryFn: () => getMessagesQuery(chatId as string),
+    refetchOnWindowFocus: false
   })
 
   return { messages: data, isMessagesLoading: isLoading }

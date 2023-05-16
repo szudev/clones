@@ -1,4 +1,4 @@
-import { getMessagesByChatId } from '@/lib/prisma/message'
+import { getMessagesByChatId, createMessagePrompt } from '@/lib/prisma/message'
 import { NextApiRequest, NextApiResponse } from 'next'
 
 export default async function handler(
@@ -13,6 +13,22 @@ export default async function handler(
     try {
       const { messages } = await getMessagesByChatId({ chatId })
       return res.status(200).json({ messages })
+    } catch (error) {
+      return res.status(500).json({ error })
+    }
+  }
+
+  if (req.method === 'POST') {
+    const { chatId, prompt, answer } = req.body
+    if (!chatId || !prompt)
+      return res.status(400).json('Missing required values.')
+    try {
+      const { newMessage } = await createMessagePrompt({
+        chatId,
+        prompt,
+        answer
+      })
+      return res.status(201).json({ newMessage })
     } catch (error) {
       return res.status(500).json({ error })
     }

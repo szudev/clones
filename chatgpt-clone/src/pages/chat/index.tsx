@@ -4,11 +4,7 @@ import { getServerSession } from 'next-auth'
 import LandingInfo from '@/components/LandingInfo'
 import { authOptions } from '../api/auth/[...nextauth]'
 
-type HomeChatProps = {
-  email: string
-}
-
-export default function HomeChat({ email }: HomeChatProps) {
+export default function HomeChat() {
   return (
     <Layout>
       <LandingInfo />
@@ -25,10 +21,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       }
     }
   }
-  const email = session?.user?.email!
   return {
-    props: {
-      email
-    }
+    props: {}
   }
 }
