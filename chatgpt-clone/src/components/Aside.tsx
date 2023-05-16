@@ -29,7 +29,7 @@ export default function Aside() {
 
   return (
     <>
-      <aside className='bg-gptdarkgray md:max-w-[260px] w-full md:relative md:h-screen sticky hidden md:flex'>
+      <aside className='bg-gptdarkgray md:max-w-[260px] w-full md:relative md:h-[100svh] sticky hidden md:flex'>
         <nav className='flex h-full flex-1 flex-col space-y-1 p-2'>
           <a
             onClick={handleNewChatClick}
