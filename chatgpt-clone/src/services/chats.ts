@@ -53,7 +53,7 @@ export async function deleteChatByChatId({ chatId, email }: IDeleteChatProps) {
     }
   )
 
-  if (!response.ok) throw new Error('An unexpected error occurred.')
+  //if (!response.ok) throw new Error('An unexpected error occurred.')
 
   const json = await response.json()
   return json.deletedChat
