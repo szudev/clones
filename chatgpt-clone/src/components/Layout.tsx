@@ -19,8 +19,8 @@ export default function Layout({ children }: LayoutProps) {
           {children}
           <ChatForm />
         </div>
+        <ToastContainer />
       </div>
-      <ToastContainer />
     </>
   )
 }

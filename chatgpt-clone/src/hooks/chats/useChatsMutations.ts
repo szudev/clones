@@ -51,6 +51,7 @@ export function useDeleteChatMutation() {
     },
     onError: (error: Error) => {
       toast(error.message, {
+        type: 'error',
         position: 'top-right',
         autoClose: 3000,
         hideProgressBar: false,
