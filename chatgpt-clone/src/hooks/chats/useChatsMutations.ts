@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/router'
 import { createNewChatMutation, deleteChatMutation } from './mutations'
 import { Chat } from '@prisma/client'
+import { toast } from 'react-toastify'
 
 export function useNewChatMutation() {
   const router = useRouter()
@@ -47,6 +48,18 @@ export function useDeleteChatMutation() {
         return oldData.filter((chat) => chat.id !== deletedChat.id)
       })
       router.push('/chat')
+    },
+    onError: (error: Error) => {
+      toast(error.message, {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        theme: 'dark'
+      })
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({ queryKey: ['chats'] })

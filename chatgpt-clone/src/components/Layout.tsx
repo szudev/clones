@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Aside from './Aside'
 import { LayoutProps } from '@/types/props.type'
 import ChatForm from './ChatForm'
+import { ToastContainer } from 'react-toastify'
 
 export default function Layout({ children }: LayoutProps) {
   return (
@@ -19,6 +20,7 @@ export default function Layout({ children }: LayoutProps) {
           <ChatForm />
         </div>
       </div>
+      <ToastContainer />
     </>
   )
 }
