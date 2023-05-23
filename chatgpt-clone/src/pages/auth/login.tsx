@@ -2,9 +2,18 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../api/auth/[...nextauth]'
 import { GetServerSidePropsContext } from 'next'
 import SignIn from '@/components/SignIn'
+import Head from 'next/head'
 
 export default function Login() {
-  return <SignIn />
+  return (
+    <>
+      <Head>
+        <title>ChatGPT Clone</title>
+        <link rel='icon' href='/chatgpt-icon.ico' />
+      </Head>
+      <SignIn />
+    </>
+  )
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {

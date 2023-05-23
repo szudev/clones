@@ -2,21 +2,22 @@ import { ChatGPTLogo } from './Icons'
 import UserAvatar from './UserAvatar'
 import TypingEffect from './TypingEffect'
 import { Avatar } from './Avatar'
-import { IMessageApiResponse } from '@/types/props.type'
+import { Answer } from '@prisma/client'
+import CodeSnippet from './Codesnippet'
 
-interface ChatMessage {
-  id: number
-  ia: boolean
+interface IMessageProps {
+  id: string
   message: string
+  answer: Omit<Answer, 'messageId'> | null
+  newMessageMutationLoading: boolean | undefined
 }
 
-export default function Message({ message, answer }: IMessageApiResponse) {
-  const avatar = answer?.answer ? <ChatGPTLogo /> : <UserAvatar />
-  const textElement = answer?.answer ? (
-    <TypingEffect text={answer.answer} />
-  ) : (
-    message
-  )
+export default function Message({
+  id,
+  message,
+  answer,
+  newMessageMutationLoading
+}: IMessageProps) {
   return (
     <div>
       <div className='text-gray-100 border-b border-black/10 bg-gptgray'>
@@ -32,14 +33,16 @@ export default function Message({ message, answer }: IMessageApiResponse) {
         </article>
       </div>
       <div className='text-gray-100 border-b border-black/10 bg-gptlightgray'>
-        <article className='flex gap-4 m-auto max-w-3xl p-6'>
+        <article className='flex gap-4 m-auto max-w-3xl p-6 overflow-x-hidden'>
           <Avatar>
             <ChatGPTLogo />
           </Avatar>
-          <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap flex-1'>
+          <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap overflow-y-auto flex-1'>
             <div className='prose-invert w-full break-words light leading-7 text-justify'>
+              {!answer && newMessageMutationLoading && <TypingEffect text='' />}
               {answer ? (
-                <TypingEffect text={answer.answer} />
+                //<TypingEffect text={answer.answer} />
+                <CodeSnippet prompt={answer.answer} />
               ) : (
                 <p>Unexpected error.</p>
               )}

@@ -19,14 +19,13 @@ export default async function handler(
   }
 
   if (req.method === 'POST') {
-    const { chatId, prompt, answer } = req.body
+    const { chatId, prompt } = req.body
     if (!chatId || !prompt)
       return res.status(400).json('Missing required values.')
     try {
       const { newMessage } = await createMessagePrompt({
         chatId,
-        prompt,
-        answer
+        prompt
       })
       return res.status(201).json({ newMessage })
     } catch (error) {
@@ -34,6 +33,6 @@ export default async function handler(
     }
   }
 
-  res.setHeader('Allow', ['GET'])
+  res.setHeader('Allow', ['GET', 'POST'])
   res.status(425).end(`Method ${req.method} is not allowed.`)
 }

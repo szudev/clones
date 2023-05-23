@@ -11,7 +11,8 @@ export function useNewMessageMutation() {
 
   if (hasChatId) {
     const { mutate, isLoading } = useMutation({
-      mutationFn: createNewMessageMutation,
+      mutationFn: async ({ prompt }: { prompt: string }) =>
+        await createNewMessageMutation({ chatId: hasChatId as string, prompt }),
       onMutate: async (messageProps) => {
         //Generamos un array<string> con 2 id temporales
         //Estas ids serán utilizadas para realizar un optimistic update
@@ -19,27 +20,27 @@ export function useNewMessageMutation() {
         //se realizará una invalidación de la query del chat para actualizar el cache
         //con los datos verdaderos (obtenidos de la base de datos)
         const { temporaryIds } = generateTemporaryIds(2)
-        await queryClient.cancelQueries(['messages', messageProps.chatId])
+        await queryClient.cancelQueries(['messages', hasChatId])
         const previousMessages = queryClient.getQueryData([
           'messages',
-          messageProps.chatId
+          hasChatId
         ])
         queryClient.setQueryData(
-          ['messages', messageProps.chatId],
+          ['messages', hasChatId],
           (oldData?: IMessageApiResponse[]) => {
             const newMessage: IMessageApiResponse = {
               id: temporaryIds[0],
               message: messageProps.prompt,
               answer: {
                 id: temporaryIds[1],
-                answer: messageProps.answer!
+                answer: ''
               }
             }
             if (oldData == null) return [newMessage]
             return [...oldData, newMessage]
           }
         )
-        return { previousMessages, chatId: messageProps.chatId }
+        return { previousMessages, chatId: hasChatId }
       },
       onError: (error, variables, context) => {
         if (context?.previousMessages != null) {

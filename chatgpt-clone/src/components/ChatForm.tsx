@@ -15,13 +15,12 @@ export default function ChatForm() {
     if (value === '') return
     if (createMessagemutation) {
       createMessagemutation({
-        prompt: value,
-        chatId: '6463237aaca4134a6cc2fec9',
-        answer:
-          ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus doloremque corrupti quibusdam tempora voluptas cupiditate aperiam eligendi, dolor iure illo ullam in voluptates tenetur debitis rem obcaecati ad quo laudantium!'
+        prompt: value.trim()
       })
     }
     textAreaRef.current.value = ''
+    textAreaRef.current.style.height = ''
+    setTextAreaEmpty(textAreaRef.current.value.trim() === '')
   }
 
   const handleChange = () => {
@@ -55,7 +54,7 @@ export default function ChatForm() {
             rows={1}
             tabIndex={0}
             defaultValue=''
-            placeholder='Send a message.'
+            placeholder='Send a message...'
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
           <button

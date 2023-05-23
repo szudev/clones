@@ -6,19 +6,29 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { Chat as ChatType } from '@prisma/client'
 import useMessagesQuery from '@/hooks/messages/useMessagesQueries'
 import ServerLoading from '@/components/ServerLoading'
+import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
 
 export default function Chat() {
   const { messages, isMessagesLoading } = useMessagesQuery()
+  const { isCreateMessageMutationLoading } = useNewMessageMutation()
   return (
     <Layout>
-      <main className='flex flex-col overflow-y-auto flex-1'>
+      <main className='flex overflow-y-auto flex-1 flex-col'>
         {isMessagesLoading && (
           <div className='flex justify-center items-center flex-1'>
             <ServerLoading />
           </div>
         )}
         {!isMessagesLoading && messages
-          ? messages.map((entry) => <Message key={entry.id} {...entry} />)
+          ? messages.map((entry) => (
+              <Message
+                key={entry.id}
+                id={entry.id}
+                message={entry.message}
+                answer={entry.answer}
+                newMessageMutationLoading={isCreateMessageMutationLoading}
+              />
+            ))
           : null}
       </main>
     </Layout>

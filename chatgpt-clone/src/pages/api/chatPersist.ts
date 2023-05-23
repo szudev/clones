@@ -4,7 +4,6 @@ import {
   OpenAIApi,
   ChatCompletionRequestMessageRoleEnum
 } from 'openai'
-import { promptInitialInstructions } from '@/utils/promptConfig'
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY
@@ -14,7 +13,8 @@ const openai = new OpenAIApi(configuration)
 const INITIAL_MESSAGES = [
   {
     role: ChatCompletionRequestMessageRoleEnum.System,
-    content: promptInitialInstructions
+    content:
+      'I will send you prompts and u will answer those prompts, please only put the answer and keep in mind that those prompt can be in any languaje'
   }
 ]
 
@@ -26,9 +26,7 @@ export default async function handler(
   const { prompt } = req.body
 
   if (!prompt) {
-    return res.status(400).json({
-      error: 'Promp is required.'
-    })
+    return res.status(400).json({ error: 'Promp is required.' })
   }
 
   try {
@@ -45,9 +43,9 @@ export default async function handler(
       ]
     })
 
-    return res.status(200).json({
-      response: completion.data.choices[0].message?.content ?? ''
-    })
+    return res
+      .status(200)
+      .json({ response: completion.data.choices[0].message?.content ?? '' })
   } catch (error) {
     return res.status(500).json({ error })
   }

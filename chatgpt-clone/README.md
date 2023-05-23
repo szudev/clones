@@ -1,7 +1,7 @@
 <div align="center">
 <strong>CHATGPT CLON</strong>
 <br />
-<span style="color: red;">🚩 ACTUALMENTE LA OPENIA SECRET KEY ESTÁ CADUCADA</span>
+<span style="color: red;">🚩 LA SECRET KEY DE OPENIA ESTÁ CADUCADA</span>
 </div>
 
 ## 💼 Acerca del proyecto:
@@ -11,10 +11,9 @@
 ## 💻 Herramientas utilizadas:
 
     Front:
-    - Nextjs: Framework de react versión 12.
+    - Nextjs: Framework de react versión 13 (NO EXPERIMENTAL - NO APP ROUTER).
     - Tailwind: CSS inline para el diseño de la aplicación.
     - Tanstack Query: Gestión de estados asíncronos. <-- Permanente
-    - Zustand: Gestión de estados. <-- Temporalmente
     - NextAuth: Proveedor de autenticación através de OAUTH (Google).
     Back:
     - Nextjs API Routes: API RESTful para la aplicación.

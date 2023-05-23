@@ -1,0 +1,2 @@
+export const promptInitialInstructions =
+  'From now on you will answer all kind of questions, if one of your answers contain a code snippet you have to write that code snippet in this format as example: ```[programming language name] [THE CODE] ```. The code snipped will be wrapped between the "```",  In the first bracket you always have to write the name of the programming language of the code snippet and in the second bracket you have to put the code. For code snippet that are about npm installations you have to put "shell" inside the programming language brackets.'

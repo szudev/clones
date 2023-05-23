@@ -31,13 +31,22 @@ export default function Aside() {
     <>
       <aside className='bg-gptdarkgray md:max-w-[260px] w-full md:relative md:h-[100svh] sticky hidden md:flex'>
         <nav className='flex h-full flex-1 flex-col space-y-1 p-2'>
-          <a
+          <button
             onClick={handleNewChatClick}
-            className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'
+            disabled={isCreateNewChatMutationLoading}
+            className='flex py-3 px-3 items-center disabled:cursor-not-allowed gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'
           >
-            <PlusIcon />
-            New chat
-          </a>
+            {isCreateNewChatMutationLoading ? (
+              <>
+                <ServerLoading /> Loading
+              </>
+            ) : (
+              <>
+                <PlusIcon />
+                New chat
+              </>
+            )}
+          </button>
           <div className='flex-col flex-1 overflow-y-auto border-b border-white/20 -mr-2'>
             <div className='flex flex-col text-gray-100 h-full text-sm pr-2'>
               {isChatsLoading && <ServerLoading />}
@@ -78,12 +87,17 @@ export default function Aside() {
           <BurgerMenu />
         </button>
         <h1 className='flex-1 text-center text-base font-normal'>New chat</h1>
-        <button className='pl-3 pr-2'>
-          <NavPlusIcon />
+        <button
+          onClick={handleNewChatClick}
+          className='pl-3 pr-2 w-11 h-6'
+          disabled={isCreateNewChatMutationLoading}
+        >
+          {isCreateNewChatMutationLoading ? <ServerLoading /> : <NavPlusIcon />}
         </button>
       </nav>
       <ResponsiveMenu
         handleNewChatClick={handleNewChatClick}
+        isCreateNewChatMutationLoading={isCreateNewChatMutationLoading}
         chats={chats}
         error={chatsError}
         isError={isChatsError}

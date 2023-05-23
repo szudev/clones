@@ -8,6 +8,7 @@ import { NextRouter } from 'next/router'
 
 interface Props {
   handleNewChatClick: () => void
+  isCreateNewChatMutationLoading: boolean
   isLoading: boolean
   isError: boolean
   error: Error | null
@@ -20,6 +21,7 @@ interface Props {
 
 export default function ResponsiveMenu({
   handleNewChatClick,
+  isCreateNewChatMutationLoading,
   isLoading,
   isError,
   error,
@@ -58,13 +60,21 @@ export default function ResponsiveMenu({
             <CloseSideBarIcon />
           </button>
         </div>
-        <a
+        <button
           onClick={handleNewChatMutationResponsive}
           className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm mb-2 flex-shrink-0 border border-white/20'
         >
-          <PlusIcon />
-          New chat
-        </a>
+          {isCreateNewChatMutationLoading ? (
+            <>
+              <ServerLoading /> Loading
+            </>
+          ) : (
+            <>
+              <PlusIcon />
+              New chat
+            </>
+          )}
+        </button>
         <div className='flex-col flex-1 overflow-y-auto border-b border-white/20 -mr-2'>
           <div className='flex flex-col text-gray-100 h-full text-sm pr-2 text-start'>
             {isLoading && <ServerLoading />}

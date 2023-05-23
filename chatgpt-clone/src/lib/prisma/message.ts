@@ -6,7 +6,10 @@ interface IGetMessagesByChatIdProps {
 
 interface ICreateMessagePromptProps extends IGetMessagesByChatIdProps {
   prompt: string
-  answer: string | null
+}
+
+interface IGetMessageById {
+  messageId: string
 }
 
 export async function getMessagesByChatId({
@@ -36,54 +39,38 @@ export async function getMessagesByChatId({
 
 export async function createMessagePrompt({
   chatId,
-  prompt,
-  answer
+  prompt
 }: ICreateMessagePromptProps) {
-  if (answer) {
-    const newMessage = await prisma.message.create({
-      data: {
-        message: prompt,
-        answer: {
-          create: {
-            answer
-          }
-        },
-        chat: {
-          connect: {
-            id: chatId
-          }
-        }
-      },
-      select: {
-        id: true,
-        message: true,
-        answer: {
-          select: {
-            id: true,
-            answer: true
-          }
+  const newMessage = await prisma.message.create({
+    data: {
+      message: prompt,
+      chat: {
+        connect: {
+          id: chatId
         }
       }
-    })
+    },
+    select: {
+      id: true,
+      message: true,
+      answer: true
+    }
+  })
 
-    return { newMessage }
-  } else {
-    const newMessage = await prisma.message.create({
-      data: {
-        message: prompt,
-        chat: {
-          connect: {
-            id: chatId
-          }
-        }
-      },
-      select: {
-        id: true,
-        message: true,
-        answer: true
-      }
-    })
+  return { newMessage }
+}
 
-    return { newMessage }
-  }
+export async function getMessageById({ messageId }: IGetMessageById) {
+  const message = await prisma.message.findUnique({
+    where: {
+      id: messageId
+    },
+    select: {
+      id: true,
+      message: true,
+      answer: true
+    }
+  })
+
+  return { message }
 }
