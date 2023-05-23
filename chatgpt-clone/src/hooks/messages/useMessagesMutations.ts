@@ -3,6 +3,7 @@ import { createNewMessageMutation } from './mutations'
 import { IMessageApiResponse } from '@/types/props.type'
 import { useRouter } from 'next/router'
 import { generateTemporaryIds } from '@/utils/uuid'
+import { toast } from 'react-toastify'
 
 export function useNewMessageMutation() {
   const queryClient = useQueryClient()
@@ -42,13 +43,24 @@ export function useNewMessageMutation() {
         )
         return { previousMessages, chatId: hasChatId }
       },
-      onError: (error, variables, context) => {
+      onError: (error: Error, variables, context) => {
         if (context?.previousMessages != null) {
           queryClient.setQueryData(
             ['messages', context.chatId],
             context.previousMessages
           )
         }
+        toast(error.message, {
+          type: 'error',
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: false,
+          progress: undefined,
+          theme: 'dark'
+        })
       },
       onSettled: async (data, error, variables, context) => {
         await queryClient.invalidateQueries({
