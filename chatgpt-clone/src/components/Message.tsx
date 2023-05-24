@@ -64,7 +64,7 @@ export default function Message({
                 <div className='border gap-2 bg-[#554652] p-4 rounded-md items-center justify-center border-red-600 flex flex-col'>
                   <p>There was an error on generating a response</p>
                   <button
-                    className='btn relative btn-primary'
+                    className='btn relative btn-primary w-32'
                     onClick={() =>
                       handleRegeneteAnswerButton({
                         messageId: id,
@@ -73,13 +73,13 @@ export default function Message({
                     }
                     disabled={isRegenerateAnswerMutationLoading}
                   >
-                    <div className='flex w-full items-center justify-center gap-2'>
+                    <div className='flex w-full items-center font-bold justify-center gap-2'>
                       <RegenerateIcon
                         loading={isRegenerateAnswerMutationLoading}
                       />
                       {isRegenerateAnswerMutationLoading
-                        ? 'Regenerating a response'
-                        : 'Regenerate response'}
+                        ? 'Generating'
+                        : 'Regenerate'}
                     </div>
                   </button>
                 </div>
