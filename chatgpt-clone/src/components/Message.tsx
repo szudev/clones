@@ -1,9 +1,10 @@
-import { ChatGPTLogo } from './Icons'
+import { ChatGPTLogo, RegenerateIcon } from './Icons'
 import UserAvatar from './UserAvatar'
 import TypingEffect from './TypingEffect'
 import { Avatar } from './Avatar'
 import { Answer } from '@prisma/client'
 import CodeSnippet from './Codesnippet'
+import { useRegenerateAnswerMutation } from '@/hooks/messages/useMessagesMutations'
 
 interface IMessageProps {
   id: string
@@ -12,12 +13,28 @@ interface IMessageProps {
   newMessageMutationLoading: boolean | undefined
 }
 
+interface IHandleRegenerateAnswerButtonProps {
+  messageId: string
+  prompt: string
+}
+
 export default function Message({
   id,
   message,
   answer,
   newMessageMutationLoading
 }: IMessageProps) {
+  const { regenerateAnswerMutate, isRegenerateAnswerMutationLoading } =
+    useRegenerateAnswerMutation()
+
+  const handleRegeneteAnswerButton = ({
+    messageId,
+    prompt
+  }: IHandleRegenerateAnswerButtonProps) => {
+    if (isRegenerateAnswerMutationLoading) return
+    regenerateAnswerMutate({ messageId, prompt })
+  }
+
   return (
     <div>
       <div className='text-gray-100 border-b border-black/10 bg-gptgray'>
@@ -44,7 +61,28 @@ export default function Message({
                 //<TypingEffect text={answer.answer} />
                 <CodeSnippet prompt={answer.answer} />
               ) : (
-                <p>Unexpected error.</p>
+                <div className='border gap-2 bg-[#554652] p-4 rounded-md items-center justify-center border-red-600 flex flex-col'>
+                  <p>There was an error on generating a response</p>
+                  <button
+                    className='btn relative btn-primary'
+                    onClick={() =>
+                      handleRegeneteAnswerButton({
+                        messageId: id,
+                        prompt: message
+                      })
+                    }
+                    disabled={isRegenerateAnswerMutationLoading}
+                  >
+                    <div className='flex w-full items-center justify-center gap-2'>
+                      <RegenerateIcon
+                        loading={isRegenerateAnswerMutationLoading}
+                      />
+                      {isRegenerateAnswerMutationLoading
+                        ? 'Regenerating a response'
+                        : 'Regenerate response'}
+                    </div>
+                  </button>
+                </div>
               )}
             </div>
           </div>

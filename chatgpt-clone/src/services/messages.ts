@@ -6,6 +6,11 @@ interface ICreateNewMessageProps extends IGetMessagesByChatIdProps {
   prompt: string
 }
 
+interface IRegenerateAnswerProps {
+  messageId: string
+  prompt: string
+}
+
 export async function getMessagesByChatId({
   chatId
 }: IGetMessagesByChatIdProps) {
@@ -64,6 +69,7 @@ export async function sendNewPromptWithChatId({
   )
 
   if (!chatGPtResponse.ok) {
+    throw new Error('OPENAI api error.')
   }
 
   const { response: gptResponse } = await chatGPtResponse.json()
@@ -80,7 +86,7 @@ export async function sendNewPromptWithChatId({
   )
 
   if (!newAnswerResponse.ok) {
-    throw new Error('OPENAI api error.')
+    throw new Error('Error on save the answer on the database')
   }
 
   const createdMessage = await fetch(
@@ -100,4 +106,45 @@ export async function sendNewPromptWithChatId({
   const { message } = await createdMessage.json()
 
   return message
+}
+
+export async function regenerateAnswer({
+  messageId,
+  prompt
+}: IRegenerateAnswerProps) {
+  const chatGPtResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chat`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt })
+    }
+  )
+
+  if (!chatGPtResponse.ok) {
+    throw new Error('OPENAI api error.')
+  }
+
+  const { response: gptResponse } = await chatGPtResponse.json()
+
+  const newAnswerResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/answer`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ answer: gptResponse, messageId })
+    }
+  )
+
+  if (!newAnswerResponse.ok) {
+    throw new Error('Error on regenerating a response. Try again later.')
+  }
+
+  const { newAnswer } = await newAnswerResponse.json()
+
+  return newAnswer
 }

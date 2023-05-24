@@ -17,7 +17,12 @@ export async function createAnswer({ answer, messageId }: ICreateAnswerProps) {
     },
     select: {
       id: true,
-      answer: true
+      answer: true,
+      message: {
+        select: {
+          chatId: true
+        }
+      }
     }
   })
 

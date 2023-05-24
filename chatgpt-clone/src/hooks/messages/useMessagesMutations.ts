@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createNewMessageMutation } from './mutations'
+import { createNewMessageMutation, regenerateAnswerMutation } from './mutations'
 import { IMessageApiResponse } from '@/types/props.type'
 import { useRouter } from 'next/router'
 import { generateTemporaryIds } from '@/utils/uuid'
-import { toast } from 'react-toastify'
+import { displayToast } from '@/utils/toastify'
 
 export function useNewMessageMutation() {
   const queryClient = useQueryClient()
@@ -50,17 +50,7 @@ export function useNewMessageMutation() {
             context.previousMessages
           )
         }
-        toast(error.message, {
-          type: 'error',
-          position: 'top-right',
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: false,
-          progress: undefined,
-          theme: 'dark'
-        })
+        displayToast({ message: error.message, toastType: 'error' })
       },
       onSettled: async (data, error, variables, context) => {
         await queryClient.invalidateQueries({
@@ -76,5 +66,27 @@ export function useNewMessageMutation() {
   } else {
     const error = 'Error'
     return { error }
+  }
+}
+
+export function useRegenerateAnswerMutation() {
+  const queryClient = useQueryClient()
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: regenerateAnswerMutation,
+    onSuccess: async (newAnswer) => {
+      await queryClient.invalidateQueries([
+        'messages',
+        newAnswer.message.chatId
+      ])
+    },
+    onError: (error: Error) => {
+      displayToast({ message: error.message, toastType: 'error' })
+    }
+  })
+
+  return {
+    regenerateAnswerMutate: mutate,
+    isRegenerateAnswerMutationLoading: isLoading
   }
 }
