@@ -1,5 +1,12 @@
-import { sendNewPromptWithChatId, regenerateAnswer } from '@/services/messages'
-import { IMessageApiResponse } from '@/types/props.type'
+import {
+  sendNewPromptWithChatId,
+  regenerateAnswer,
+  sendNewPromptWithoutChatId
+} from '@/services/messages'
+import {
+  IMessageApiResponse,
+  INewMessageWithoutChatIdResponse
+} from '@/types/props.type'
 
 interface ICreateNewMessageMutationProps {
   chatId: string
@@ -8,6 +15,12 @@ interface ICreateNewMessageMutationProps {
 
 interface IRegenerateAnswerMutationProps {
   messageId: string
+  prompt: string
+}
+
+interface ICreateNewMessageWithoutChatIdMutationProps {
+  email: string
+  chatId: string
   prompt: string
 }
 
@@ -23,4 +36,16 @@ export async function regenerateAnswerMutation({
   prompt
 }: IRegenerateAnswerMutationProps) {
   return await regenerateAnswer({ messageId, prompt })
+}
+
+export async function createNewMessageWithoutChatIdMutation({
+  email,
+  chatId,
+  prompt
+}: ICreateNewMessageWithoutChatIdMutationProps): Promise<INewMessageWithoutChatIdResponse> {
+  if (chatId === '') {
+    return await sendNewPromptWithoutChatId({ email, prompt })
+  } else {
+    return await sendNewPromptWithChatId({ chatId, prompt })
+  }
 }

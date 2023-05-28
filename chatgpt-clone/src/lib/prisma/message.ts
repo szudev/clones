@@ -68,7 +68,8 @@ export async function getMessageById({ messageId }: IGetMessageById) {
     select: {
       id: true,
       message: true,
-      answer: true
+      answer: true,
+      chatId: true
     }
   })
 

@@ -11,6 +11,7 @@ import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
 export default function Chat() {
   const { messages, isMessagesLoading } = useMessagesQuery()
   const { isCreateMessageMutationLoading } = useNewMessageMutation()
+
   return (
     <Layout>
       <main className='flex overflow-y-auto flex-1 flex-col'>

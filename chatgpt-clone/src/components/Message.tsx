@@ -1,10 +1,12 @@
 import { ChatGPTLogo, RegenerateIcon } from './Icons'
 import UserAvatar from './UserAvatar'
-import TypingEffect from './TypingEffect'
 import { Avatar } from './Avatar'
 import { Answer } from '@prisma/client'
 import CodeSnippet from './Codesnippet'
-import { useRegenerateAnswerMutation } from '@/hooks/messages/useMessagesMutations'
+import {
+  useNewMessageMutation,
+  useRegenerateAnswerMutation
+} from '@/hooks/messages/useMessagesMutations'
 
 interface IMessageProps {
   id: string
@@ -26,6 +28,7 @@ export default function Message({
 }: IMessageProps) {
   const { regenerateAnswerMutate, isRegenerateAnswerMutationLoading } =
     useRegenerateAnswerMutation()
+  const { isCreateMessageMutationLoading } = useNewMessageMutation()
 
   const handleRegeneteAnswerButton = ({
     messageId,
@@ -56,9 +59,10 @@ export default function Message({
           </Avatar>
           <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap overflow-y-auto flex-1'>
             <div className='prose-invert w-full break-words light leading-7 text-justify'>
-              {!answer && newMessageMutationLoading && <TypingEffect text='' />}
-              {answer ? (
-                //<TypingEffect text={answer.answer} />
+              {!answer && isCreateMessageMutationLoading && (
+                <strong className='text-white'>Loading...</strong>
+              )}
+              {answer && !newMessageMutationLoading ? (
                 <CodeSnippet prompt={answer.answer} />
               ) : (
                 <div className='border gap-2 bg-[#554652] p-4 rounded-md items-center justify-center border-red-600 flex flex-col'>

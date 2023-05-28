@@ -1,14 +1,31 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { createNewMessageMutation, regenerateAnswerMutation } from './mutations'
-import { IMessageApiResponse } from '@/types/props.type'
+import {
+  createNewMessageMutation,
+  regenerateAnswerMutation,
+  createNewMessageWithoutChatIdMutation
+} from './mutations'
+import {
+  IMessageApiResponse,
+  INewMessageWithoutChatIdResponse,
+  TTemporaryMessage
+} from '@/types/props.type'
 import { useRouter } from 'next/router'
 import { generateTemporaryIds } from '@/utils/uuid'
 import { displayToast } from '@/utils/toastify'
+import { useSession } from 'next-auth/react'
+import { useMessageStore } from '@/store/messages'
 
 export function useNewMessageMutation() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const hasChatId = router.query.id
+  const { data } = useSession()
+  const {
+    addMessage,
+    updateMessage,
+    temporaryChat: { chatId }
+  } = useMessageStore((state) => state)
+  const email = data?.user?.email as string
 
   if (hasChatId) {
     const { mutate, isLoading } = useMutation({
@@ -64,8 +81,46 @@ export function useNewMessageMutation() {
       isCreateMessageMutationLoading: isLoading
     }
   } else {
-    const error = 'Error'
-    return { error }
+    const { mutate, isLoading } = useMutation({
+      mutationFn: async ({ prompt }: { prompt: string }) =>
+        await createNewMessageWithoutChatIdMutation({ email, chatId, prompt }),
+      onMutate: (messageProps) => {
+        const { temporaryIds } = generateTemporaryIds(2)
+        const newTemporaryMessage: TTemporaryMessage = {
+          id: temporaryIds[0],
+          message: messageProps.prompt,
+          answer: {
+            id: temporaryIds[1],
+            answer: ''
+          }
+        }
+        addMessage(newTemporaryMessage)
+
+        return { temporaryMessageId: newTemporaryMessage.id }
+      },
+      onSuccess: async (
+        data: INewMessageWithoutChatIdResponse,
+        variables,
+        context
+      ) => {
+        updateMessage(
+          data.chatId,
+          context?.temporaryMessageId!,
+          data.id,
+          data.answer?.id!,
+          data.answer?.answer!
+        )
+        await queryClient.invalidateQueries({ queryKey: ['chats'] })
+      },
+      onError: (error: Error) => {
+        displayToast({ message: error.message, toastType: 'error' })
+      }
+    })
+
+    return {
+      createMessagemutation: mutate,
+      isCreateMessageMutationLoading: isLoading
+    }
   }
 }
 

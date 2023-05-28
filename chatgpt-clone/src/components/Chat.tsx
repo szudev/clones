@@ -2,6 +2,7 @@ import { useDeleteChatMutation } from '@/hooks/chats/useChatsMutations'
 import { TrashIcon } from './Icons'
 import { ChatIcon } from './Icons'
 import Link from 'next/link'
+import ServerLoading from './ServerLoading'
 
 type ChatProps = {
   chatId: string
@@ -44,8 +45,9 @@ export default function Chat({ chatId, chatTitle, dynamicPath }: ChatProps) {
         <button
           className='p-1 hover:text-white'
           onClick={handleRemoveChatClick}
+          disabled={isDeleteChatMutationLoading}
         >
-          <TrashIcon />
+          {isDeleteChatMutationLoading ? <ServerLoading /> : <TrashIcon />}
         </button>
       </div>
     </Link>

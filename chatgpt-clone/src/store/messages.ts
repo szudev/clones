@@ -1,61 +1,64 @@
 import { create } from 'zustand'
-import { sendPromptProps } from '@/types/props.type'
+import { Answer } from '@prisma/client'
 
 type messageType = {
-  id: number
-  ia: boolean
+  id: string
   message: string
+  answer: Omit<Answer, 'messageId'> | null
 }
 
 interface MessageState {
-  messages: messageType[]
-  sendPrompt: ({ prompt }: sendPromptProps) => Promise<void>
+  temporaryChat: {
+    chatId: string
+    messages: messageType[]
+  }
+  addMessage: (newMessage: messageType) => void
+  updateMessage: (
+    chatId: string,
+    messageId: string,
+    newMessageId: string,
+    newAnswerId: string,
+    newAnswer: string
+  ) => void
+  clearMessages: () => void
 }
 
-export const useMessageStore = create<MessageState>()((set, get) => ({
-  messages: [],
-  sendPrompt: async ({ prompt }) => {
-    const messageIAid = get().messages.length + 1
-
+export const useMessageStore = create<MessageState>((set) => ({
+  temporaryChat: {
+    chatId: '',
+    messages: []
+  },
+  addMessage: (newMessage) =>
     set((state) => ({
-      messages: [
-        ...state.messages,
-        {
-          id: state.messages.length,
-          ia: false,
-          message: prompt
-        },
-        {
-          id: messageIAid,
-          ia: true,
-          message: ''
-        }
-      ]
-    }))
-
-    try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ prompt })
-      })
-
-      const json = await response.json()
-      set((state) => ({
-        messages: state.messages.map((entry) => {
-          if (entry.id === messageIAid) {
-            return {
-              ...entry,
-              message: json.response
-            }
-          }
-          return entry
-        })
-      }))
-    } catch (error) {
-      console.log({ path: 'sendPrompt from useMessageStore', error })
-    }
-  }
+      temporaryChat: {
+        ...state.temporaryChat,
+        messages: [...state.temporaryChat.messages, newMessage]
+      }
+    })),
+  updateMessage: (chatId, messageId, newMessageId, newAnswerId, newAnswer) =>
+    set((state) => ({
+      temporaryChat: {
+        chatId,
+        messages: state.temporaryChat.messages.map((message) =>
+          message.id === messageId
+            ? {
+                ...message,
+                id: newMessageId,
+                answer: {
+                  ...message.answer,
+                  id: newAnswerId,
+                  answer: newAnswer
+                }
+              }
+            : message
+        )
+      }
+    })),
+  clearMessages: () =>
+    set({
+      temporaryChat: {
+        chatId: '',
+        messages: []
+      }
+    })
 }))
