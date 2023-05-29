@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import Aside from './Aside'
 import { LayoutProps } from '@/types/props.type'
-import ChatForm from './ChatForm'
 import { ToastContainer } from 'react-toastify'
 
 export default function Layout({ children }: LayoutProps) {
@@ -17,7 +16,6 @@ export default function Layout({ children }: LayoutProps) {
         <Aside />
         <div className='bg-gptgray w-full overflow-hidden flex-1 justify-between flex flex-col'>
           {children}
-          <ChatForm />
         </div>
         <ToastContainer />
       </div>

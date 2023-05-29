@@ -1,23 +1,22 @@
-import { useRef, useState } from 'react'
-import { MutableRefObject } from 'react'
+import { useSendPromptWithoutChatIdMutation } from '@/hooks/messages/useMessagesMutations'
+import { useRef, MutableRefObject, useState } from 'react'
 import { SendIcon } from './Icons'
-import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
 
-export default function ChatForm() {
+export default function ChatFormLanding() {
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
   const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
-  const { createMessagemutation, isCreateMessageMutationLoading } =
-    useNewMessageMutation()
+  const {
+    sendPromptWithoutChatIdMutate,
+    isSendPromptWithoutChatIdMutationLoading
+  } = useSendPromptWithoutChatIdMutation()
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
     const { value } = textAreaRef.current
     if (value === '') return
-    if (createMessagemutation) {
-      createMessagemutation({
-        prompt: value.trim()
-      })
-    }
+    sendPromptWithoutChatIdMutate({
+      prompt: value.trim()
+    })
     textAreaRef.current.value = ''
     textAreaRef.current.style.height = ''
     setTextAreaEmpty(textAreaRef.current.value.trim() === '')
@@ -33,7 +32,12 @@ export default function ChatForm() {
   }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLFormElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !isTextAreaEmpty) {
+    if (
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      !isTextAreaEmpty &&
+      !isSendPromptWithoutChatIdMutationLoading
+    ) {
       event.preventDefault()
       handleSubmit()
     }
@@ -58,7 +62,9 @@ export default function ChatForm() {
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
           <button
-            disabled={isTextAreaEmpty}
+            disabled={
+              isTextAreaEmpty || isSendPromptWithoutChatIdMutationLoading
+            }
             className='disabled:opacity-40 enabled:hover:bg-gray-900 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
           >
             <SendIcon />

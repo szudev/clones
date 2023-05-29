@@ -6,11 +6,13 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]'
 import { Chat as ChatType } from '@prisma/client'
 import useMessagesQuery from '@/hooks/messages/useMessagesQueries'
 import ServerLoading from '@/components/ServerLoading'
-import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
+import { useSendPromptWithChatIdMutation } from '@/hooks/messages/useMessagesMutations'
+import ChatFormDynamic from '@/components/ChatFormDynamic'
 
 export default function Chat() {
   const { messages, isMessagesLoading } = useMessagesQuery()
-  const { isCreateMessageMutationLoading } = useNewMessageMutation()
+  const { isSendPromptWithChatIdMutationLoading } =
+    useSendPromptWithChatIdMutation()
 
   return (
     <Layout>
@@ -27,11 +29,14 @@ export default function Chat() {
                 id={entry.id}
                 message={entry.message}
                 answer={entry.answer}
-                newMessageMutationLoading={isCreateMessageMutationLoading}
+                newMessageMutationLoading={
+                  isSendPromptWithChatIdMutationLoading
+                }
               />
             ))
           : null}
       </main>
+      <ChatFormDynamic />
     </Layout>
   )
 }

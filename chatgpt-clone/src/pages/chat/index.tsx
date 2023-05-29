@@ -4,17 +4,19 @@ import { getServerSession } from 'next-auth'
 import LandingInfo from '@/components/LandingInfo'
 import { authOptions } from '../api/auth/[...nextauth]'
 import { useMessageStore } from '@/store/messages'
-import { useNewMessageMutation } from '@/hooks/messages/useMessagesMutations'
+import { useSendPromptWithoutChatIdMutation } from '@/hooks/messages/useMessagesMutations'
 import Message from '@/components/Message'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import ChatFormLanding from '@/components/ChatFormLanding'
 
 export default function HomeChat() {
   const {
     clearMessages,
     temporaryChat: { messages }
   } = useMessageStore((state) => state)
-  const { isCreateMessageMutationLoading } = useNewMessageMutation()
+  const { isSendPromptWithoutChatIdMutationLoading } =
+    useSendPromptWithoutChatIdMutation()
   const router = useRouter()
 
   useEffect(() => {
@@ -39,13 +41,16 @@ export default function HomeChat() {
               id={entry.id}
               message={entry.message}
               answer={entry.answer}
-              newMessageMutationLoading={isCreateMessageMutationLoading}
+              newMessageMutationLoading={
+                isSendPromptWithoutChatIdMutationLoading
+              }
             />
           ))
         ) : (
           <LandingInfo />
         )}
       </main>
+      <ChatFormLanding />
     </Layout>
   )
 }

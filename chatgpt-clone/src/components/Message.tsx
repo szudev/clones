@@ -3,10 +3,7 @@ import UserAvatar from './UserAvatar'
 import { Avatar } from './Avatar'
 import { Answer } from '@prisma/client'
 import CodeSnippet from './Codesnippet'
-import {
-  useNewMessageMutation,
-  useRegenerateAnswerMutation
-} from '@/hooks/messages/useMessagesMutations'
+import { useRegenerateAnswerMutation } from '@/hooks/messages/useMessagesMutations'
 
 interface IMessageProps {
   id: string
@@ -28,7 +25,6 @@ export default function Message({
 }: IMessageProps) {
   const { regenerateAnswerMutate, isRegenerateAnswerMutationLoading } =
     useRegenerateAnswerMutation()
-  const { isCreateMessageMutationLoading } = useNewMessageMutation()
 
   const handleRegeneteAnswerButton = ({
     messageId,
@@ -59,7 +55,7 @@ export default function Message({
           </Avatar>
           <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap overflow-y-auto flex-1'>
             <div className='prose-invert w-full break-words light leading-7 text-justify'>
-              {!answer && isCreateMessageMutationLoading && (
+              {!answer && newMessageMutationLoading && (
                 <strong className='text-white'>Loading...</strong>
               )}
               {answer && !newMessageMutationLoading ? (

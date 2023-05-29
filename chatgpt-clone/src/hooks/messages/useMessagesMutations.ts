@@ -124,6 +124,114 @@ export function useNewMessageMutation() {
   }
 }
 
+export function useSendPromptWithChatIdMutation() {
+  const router = useRouter()
+  const chatId = router.query.id
+  const queryClient = useQueryClient()
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async ({ prompt }: { prompt: string }) =>
+      await createNewMessageMutation({ chatId: chatId as string, prompt }),
+    onMutate: async (messageProps) => {
+      //Generamos un array<string> con 2 id temporales
+      //Estas ids serán utilizadas para realizar un optimistic update
+      //una vez acabe el mutate, ya sea exitoso o en error,
+      //se realizará una invalidación de la query del chat para actualizar el cache
+      //con los datos verdaderos (obtenidos de la base de datos)
+      const { temporaryIds } = generateTemporaryIds(2)
+      await queryClient.cancelQueries(['messages', chatId])
+      const previousMessages = queryClient.getQueryData(['messages', chatId])
+      queryClient.setQueryData(
+        ['messages', chatId],
+        (oldData?: IMessageApiResponse[]) => {
+          const newMessage: IMessageApiResponse = {
+            id: temporaryIds[0],
+            message: messageProps.prompt,
+            answer: {
+              id: temporaryIds[1],
+              answer: ''
+            }
+          }
+          if (oldData == null) return [newMessage]
+          return [...oldData, newMessage]
+        }
+      )
+      return { previousMessages, chatId: chatId }
+    },
+    onError: (error: Error, variables, context) => {
+      if (context?.previousMessages != null) {
+        queryClient.setQueryData(
+          ['messages', context.chatId],
+          context.previousMessages
+        )
+      }
+      displayToast({ message: error.message, toastType: 'error' })
+    },
+    onSettled: async (data, error, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: ['messages', context?.chatId]
+      })
+    }
+  })
+
+  return {
+    sendPromptWithChatIdMutate: mutate,
+    isSendPromptWithChatIdMutationLoading: isLoading
+  }
+}
+
+export function useSendPromptWithoutChatIdMutation() {
+  const { data } = useSession()
+  const email = data?.user?.email as string
+  const queryClient = useQueryClient()
+  const {
+    addMessage,
+    updateMessage,
+    temporaryChat: { chatId }
+  } = useMessageStore((state) => state)
+
+  const { mutate, isLoading } = useMutation({
+    mutationFn: async ({ prompt }: { prompt: string }) =>
+      await createNewMessageWithoutChatIdMutation({ email, chatId, prompt }),
+    onMutate: (messageProps) => {
+      const { temporaryIds } = generateTemporaryIds(2)
+      const newTemporaryMessage: TTemporaryMessage = {
+        id: temporaryIds[0],
+        message: messageProps.prompt,
+        answer: {
+          id: temporaryIds[1],
+          answer: ''
+        }
+      }
+      addMessage(newTemporaryMessage)
+
+      return { temporaryMessageId: newTemporaryMessage.id }
+    },
+    onSuccess: async (
+      data: INewMessageWithoutChatIdResponse,
+      variables,
+      context
+    ) => {
+      updateMessage(
+        data.chatId,
+        context?.temporaryMessageId!,
+        data.id,
+        data.answer?.id!,
+        data.answer?.answer!
+      )
+      await queryClient.invalidateQueries({ queryKey: ['chats'] })
+    },
+    onError: (error: Error) => {
+      displayToast({ message: error.message, toastType: 'error' })
+    }
+  })
+
+  return {
+    sendPromptWithoutChatIdMutate: mutate,
+    isSendPromptWithoutChatIdMutationLoading: isLoading
+  }
+}
+
 export function useRegenerateAnswerMutation() {
   const queryClient = useQueryClient()
 
