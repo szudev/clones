@@ -160,44 +160,6 @@ export async function sendNewPromptWithoutChatId({
   email,
   prompt
 }: IsendNewPromptWithoutChatIdProps): Promise<INewMessageWithoutChatIdResponse> {
-  const newChatResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chats`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ email })
-    }
-  )
-
-  if (!newChatResponse.ok) {
-    throw new Error(
-      'Chats and Messages are temporarily unavailable. We are working to restore this feature as soon as possible.'
-    )
-  }
-
-  const { chat } = await newChatResponse.json()
-
-  const newMessageResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/messages`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ chatId: chat.id, prompt })
-    }
-  )
-
-  if (!newMessageResponse.ok) {
-    throw new Error(
-      'Messages are temporarily unavailable. We are working to restore this feature as soon as possible.'
-    )
-  }
-
-  const { newMessage } = await newMessageResponse.json()
-
   const chatGPtResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chat`,
     {
@@ -214,6 +176,40 @@ export async function sendNewPromptWithoutChatId({
   }
 
   const { response: gptResponse } = await chatGPtResponse.json()
+
+  const newChatResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chats`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    }
+  )
+
+  if (!newChatResponse.ok) {
+    throw new Error('Error 500 - Server side error.')
+  }
+
+  const { chat } = await newChatResponse.json()
+
+  const newMessageResponse = await fetch(
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ chatId: chat.id, prompt })
+    }
+  )
+
+  if (!newMessageResponse.ok) {
+    throw new Error('Error 500 - Server side error.')
+  }
+
+  const { newMessage } = await newMessageResponse.json()
 
   const newAnswerResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/answer`,
@@ -241,7 +237,7 @@ export async function sendNewPromptWithoutChatId({
   )
 
   if (!createdMessage.ok) {
-    throw new Error('Error on GET the new message.')
+    throw new Error('Error 500 - Server side error.')
   }
 
   const { message } = await createdMessage.json()

@@ -4,12 +4,13 @@ import { Avatar } from './Avatar'
 import { Answer } from '@prisma/client'
 import CodeSnippet from './Codesnippet'
 import { useRegenerateAnswerMutation } from '@/hooks/messages/useMessagesMutations'
+import ServerLoading from './ServerLoading'
 
 interface IMessageProps {
   id: string
   message: string
   answer: Omit<Answer, 'messageId'> | null
-  newMessageMutationLoading: boolean | undefined
+  newMessageMutationLoading: boolean
 }
 
 interface IHandleRegenerateAnswerButtonProps {
@@ -55,12 +56,16 @@ export default function Message({
           </Avatar>
           <div className='min-h-[20px] flex flex-col items-start gap-4 whitespace-pre-wrap overflow-y-auto flex-1'>
             <div className='prose-invert w-full break-words light leading-7 text-justify'>
-              {!answer && newMessageMutationLoading && (
-                <strong className='text-white'>Loading...</strong>
+              {newMessageMutationLoading && (
+                <div className='flex items-center gap-2'>
+                  <ServerLoading />{' '}
+                  <span className='animate-pulse text-gray-100'>Loading</span>
+                </div>
               )}
-              {answer && !newMessageMutationLoading ? (
+              {answer && !newMessageMutationLoading && (
                 <CodeSnippet prompt={answer.answer} />
-              ) : (
+              )}
+              {answer === null && !newMessageMutationLoading && (
                 <div className='border gap-2 bg-[#554652] p-4 rounded-md items-center justify-center border-red-600 flex flex-col'>
                   <p>There was an error on generating a response</p>
                   <button

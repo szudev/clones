@@ -15,7 +15,7 @@ export default function HomeChat() {
     clearMessages,
     temporaryChat: { messages }
   } = useMessageStore((state) => state)
-  const { isSendPromptWithoutChatIdMutationLoading } =
+  const { sendPromptWithOutChatIdLoading } =
     useSendPromptWithoutChatIdMutation()
   const router = useRouter()
 
@@ -35,14 +35,16 @@ export default function HomeChat() {
     <Layout>
       <main className='flex overflow-y-auto flex-1 flex-col'>
         {messages.length > 0 ? (
-          messages.map((entry) => (
+          messages.map((entry, index, array) => (
             <Message
               key={entry.id}
               id={entry.id}
               message={entry.message}
               answer={entry.answer}
               newMessageMutationLoading={
-                isSendPromptWithoutChatIdMutationLoading
+                index === array.length - 1
+                  ? sendPromptWithOutChatIdLoading
+                  : false
               }
             />
           ))

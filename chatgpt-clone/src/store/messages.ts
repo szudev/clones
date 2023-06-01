@@ -20,6 +20,7 @@ interface MessageState {
     newAnswerId: string,
     newAnswer: string
   ) => void
+  removeLastMessage: () => void
   clearMessages: () => void
 }
 
@@ -54,6 +55,14 @@ export const useMessageStore = create<MessageState>((set) => ({
         )
       }
     })),
+  removeLastMessage: () => {
+    set((state) => ({
+      temporaryChat: {
+        ...state.temporaryChat,
+        messages: state.temporaryChat.messages.slice(0, -1)
+      }
+    }))
+  },
   clearMessages: () =>
     set({
       temporaryChat: {

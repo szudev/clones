@@ -1,20 +1,21 @@
 import { useSendPromptWithChatIdMutation } from '@/hooks/messages/useMessagesMutations'
 import { useRef, MutableRefObject, useState } from 'react'
 import { SendIcon } from './Icons'
+import { useRouter } from 'next/router'
 
 export default function ChatFormDynamic() {
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
   const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
-  const { sendPromptWithChatIdMutate, isSendPromptWithChatIdMutationLoading } =
+  const { sendPromptWithChatIdMutate, sendPromptWithChatIdLoading } =
     useSendPromptWithChatIdMutation()
+  const router = useRouter()
+  const chatId = router.query.id as string
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
     const { value } = textAreaRef.current
     if (value === '') return
-    sendPromptWithChatIdMutate({
-      prompt: value.trim()
-    })
+    sendPromptWithChatIdMutate({ chatId, prompt: value.trim() })
     textAreaRef.current.value = ''
     textAreaRef.current.style.height = ''
     setTextAreaEmpty(textAreaRef.current.value.trim() === '')
@@ -34,7 +35,7 @@ export default function ChatFormDynamic() {
       event.key === 'Enter' &&
       !event.shiftKey &&
       !isTextAreaEmpty &&
-      !isSendPromptWithChatIdMutationLoading
+      !sendPromptWithChatIdLoading
     ) {
       event.preventDefault()
       handleSubmit()
@@ -60,7 +61,7 @@ export default function ChatFormDynamic() {
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
           <button
-            disabled={isTextAreaEmpty || isSendPromptWithChatIdMutationLoading}
+            disabled={isTextAreaEmpty || sendPromptWithChatIdLoading}
             className='disabled:opacity-40 enabled:hover:bg-gray-900 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
           >
             <SendIcon />

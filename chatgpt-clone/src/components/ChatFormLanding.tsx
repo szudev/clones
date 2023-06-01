@@ -5,10 +5,8 @@ import { SendIcon } from './Icons'
 export default function ChatFormLanding() {
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
   const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
-  const {
-    sendPromptWithoutChatIdMutate,
-    isSendPromptWithoutChatIdMutationLoading
-  } = useSendPromptWithoutChatIdMutation()
+  const { sendPromptWithoutChatIdMutate, sendPromptWithOutChatIdLoading } =
+    useSendPromptWithoutChatIdMutation()
 
   const handleSubmit = (event?: React.FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
@@ -36,7 +34,7 @@ export default function ChatFormLanding() {
       event.key === 'Enter' &&
       !event.shiftKey &&
       !isTextAreaEmpty &&
-      !isSendPromptWithoutChatIdMutationLoading
+      !sendPromptWithOutChatIdLoading
     ) {
       event.preventDefault()
       handleSubmit()
@@ -62,9 +60,7 @@ export default function ChatFormLanding() {
             className='flex w-full h-6 resize-none bg-transparent m-0 border-0 outline-none'
           />
           <button
-            disabled={
-              isTextAreaEmpty || isSendPromptWithoutChatIdMutationLoading
-            }
+            disabled={isTextAreaEmpty || sendPromptWithOutChatIdLoading}
             className='disabled:opacity-40 enabled:hover:bg-gray-900 enabled:hover:text-gray-400 disabled:hover:bg-transparent text-white absolute p-1 rounded-md bottom-2.5 right-2.5'
           >
             <SendIcon />

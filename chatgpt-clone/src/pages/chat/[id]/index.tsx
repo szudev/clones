@@ -11,8 +11,7 @@ import ChatFormDynamic from '@/components/ChatFormDynamic'
 
 export default function Chat() {
   const { messages, isMessagesLoading } = useMessagesQuery()
-  const { isSendPromptWithChatIdMutationLoading } =
-    useSendPromptWithChatIdMutation()
+  const { sendPromptWithChatIdLoading } = useSendPromptWithChatIdMutation()
 
   return (
     <Layout>
@@ -23,14 +22,16 @@ export default function Chat() {
           </div>
         )}
         {!isMessagesLoading && messages
-          ? messages.map((entry) => (
+          ? messages.map((entry, index, array) => (
               <Message
                 key={entry.id}
                 id={entry.id}
                 message={entry.message}
                 answer={entry.answer}
                 newMessageMutationLoading={
-                  isSendPromptWithChatIdMutationLoading
+                  index === array.length - 1
+                    ? sendPromptWithChatIdLoading
+                    : false
                 }
               />
             ))
