@@ -15,6 +15,7 @@ import { useSession } from 'next-auth/react'
 import { useMessageStore } from '@/store/messages'
 import { useMutationLoadingsStore } from '@/store/mutationLoadings'
 import { useEffect } from 'react'
+import { useOpenAiKeyStore } from '@/store/openAIKey'
 
 export function useSendPromptWithChatIdMutation() {
   const queryClient = useQueryClient()
@@ -82,6 +83,7 @@ export function useSendPromptWithoutChatIdMutation() {
   const { data } = useSession()
   const email = data?.user?.email as string
   const queryClient = useQueryClient()
+  const { openAiKey } = useOpenAiKeyStore((state) => state)
   const {
     addMessage,
     updateMessage,
@@ -96,7 +98,12 @@ export function useSendPromptWithoutChatIdMutation() {
     isLoading: isSendPromptWithoutChatIdMutationLoading
   } = useMutation({
     mutationFn: async ({ prompt }: { prompt: string }) =>
-      await createNewMessageWithoutChatIdMutation({ email, chatId, prompt }),
+      await createNewMessageWithoutChatIdMutation({
+        email,
+        chatId,
+        prompt,
+        openAiKey
+      }),
     onMutate: (messageProps) => {
       const { temporaryIds } = generateTemporaryIds(1)
       const newTemporaryMessage: TTemporaryMessage = {

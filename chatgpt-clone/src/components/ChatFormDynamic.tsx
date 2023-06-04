@@ -2,9 +2,11 @@ import { useSendPromptWithChatIdMutation } from '@/hooks/messages/useMessagesMut
 import { useRef, MutableRefObject, useState } from 'react'
 import { SendIcon } from './Icons'
 import { useRouter } from 'next/router'
+import { useOpenAiKeyStore } from '@/store/openAIKey'
 
 export default function ChatFormDynamic() {
   const textAreaRef = useRef() as MutableRefObject<HTMLTextAreaElement>
+  const { openAiKey } = useOpenAiKeyStore((state) => state)
   const [isTextAreaEmpty, setTextAreaEmpty] = useState(true)
   const { sendPromptWithChatIdMutate, sendPromptWithChatIdLoading } =
     useSendPromptWithChatIdMutation()
@@ -15,7 +17,7 @@ export default function ChatFormDynamic() {
     event?.preventDefault()
     const { value } = textAreaRef.current
     if (value === '') return
-    sendPromptWithChatIdMutate({ chatId, prompt: value.trim() })
+    sendPromptWithChatIdMutate({ chatId, prompt: value.trim(), openAiKey })
     textAreaRef.current.value = ''
     textAreaRef.current.style.height = ''
     setTextAreaEmpty(textAreaRef.current.value.trim() === '')

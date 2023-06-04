@@ -5,6 +5,7 @@ import Chat from './Chat'
 import { signOut } from 'next-auth/react'
 import { Dispatch, SetStateAction, useEffect } from 'react'
 import { NextRouter } from 'next/router'
+import OpenaiApiKeyInput from './OpenaiApiKeyInput'
 
 interface Props {
   handleNewChatClick: () => void
@@ -96,6 +97,7 @@ export default function ResponsiveMenu({
           </div>
         </div>
         <div className='flex flex-col'>
+          <OpenaiApiKeyInput />
           <a
             onClick={() => signOut()}
             className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm'

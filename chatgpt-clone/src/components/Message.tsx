@@ -5,6 +5,7 @@ import { Answer } from '@prisma/client'
 import CodeSnippet from './Codesnippet'
 import { useRegenerateAnswerMutation } from '@/hooks/messages/useMessagesMutations'
 import ServerLoading from './ServerLoading'
+import { useOpenAiKeyStore } from '@/store/openAIKey'
 
 interface IMessageProps {
   id: string
@@ -26,13 +27,14 @@ export default function Message({
 }: IMessageProps) {
   const { regenerateAnswerMutate, isRegenerateAnswerMutationLoading } =
     useRegenerateAnswerMutation()
+  const { openAiKey } = useOpenAiKeyStore((state) => state)
 
   const handleRegeneteAnswerButton = ({
     messageId,
     prompt
   }: IHandleRegenerateAnswerButtonProps) => {
     if (isRegenerateAnswerMutationLoading) return
-    regenerateAnswerMutate({ messageId, prompt })
+    regenerateAnswerMutate({ messageId, prompt, openAiKey })
   }
 
   return (

@@ -11,41 +11,47 @@ import {
 interface ICreateNewMessageMutationProps {
   chatId: string
   prompt: string
+  openAiKey: string
 }
 
 interface IRegenerateAnswerMutationProps {
   messageId: string
   prompt: string
+  openAiKey: string
 }
 
 interface ICreateNewMessageWithoutChatIdMutationProps {
   email: string
   chatId: string
   prompt: string
+  openAiKey: string
 }
 
 export async function createNewMessageMutation({
   chatId,
-  prompt
+  prompt,
+  openAiKey
 }: ICreateNewMessageMutationProps): Promise<IMessageApiResponse> {
-  return await sendNewPromptWithChatId({ chatId, prompt })
+  return await sendNewPromptWithChatId({ chatId, prompt, openAiKey })
 }
 
 export async function regenerateAnswerMutation({
   messageId,
-  prompt
+  prompt,
+  openAiKey
 }: IRegenerateAnswerMutationProps) {
-  return await regenerateAnswer({ messageId, prompt })
+  return await regenerateAnswer({ messageId, prompt, openAiKey })
 }
 
 export async function createNewMessageWithoutChatIdMutation({
   email,
   chatId,
-  prompt
+  prompt,
+  openAiKey
 }: ICreateNewMessageWithoutChatIdMutationProps): Promise<INewMessageWithoutChatIdResponse> {
   if (chatId === '') {
-    return await sendNewPromptWithoutChatId({ email, prompt })
+    return await sendNewPromptWithoutChatId({ email, prompt, openAiKey })
   } else {
-    return await sendNewPromptWithChatId({ chatId, prompt })
+    return await sendNewPromptWithChatId({ chatId, prompt, openAiKey })
   }
 }

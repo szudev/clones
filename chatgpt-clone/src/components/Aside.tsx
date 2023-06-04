@@ -6,17 +6,14 @@ import { useState } from 'react'
 import ResponsiveMenu from './ResponsiveMenu'
 import useChatsqueries from '@/hooks/chats/useChatsQueries'
 import { useNewChatMutation } from '@/hooks/chats/useChatsMutations'
+import OpenaiApiKeyInput from './OpenaiApiKeyInput'
 
 export default function Aside() {
   const [responsiveSideBar, setResponsiveSideBar] = useState(false)
   const { chats, isChatsLoading, isChatsError, isChatsFetched, chatsError } =
     useChatsqueries()
-  const {
-    newChatMutation,
-    isCreateNewChatMutationLoading,
-    isCreateNewChatErrorMutation,
-    router
-  } = useNewChatMutation()
+  const { newChatMutation, isCreateNewChatMutationLoading, router } =
+    useNewChatMutation()
 
   const handleNewChatClick = () => {
     if (isCreateNewChatMutationLoading) return
@@ -68,6 +65,7 @@ export default function Aside() {
             </div>
           </div>
           <div className='flex flex-col'>
+            <OpenaiApiKeyInput />
             <a
               onClick={() => signOut()}
               className='flex py-3 px-3 items-center gap-3 rounded-md hover:bg-gray-500/10 transition-colors duration-200 text-white cursor-pointer text-sm'

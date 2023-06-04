@@ -6,16 +6,19 @@ interface IGetMessagesByChatIdProps {
 
 interface ICreateNewMessageProps extends IGetMessagesByChatIdProps {
   prompt: string
+  openAiKey: string
 }
 
 interface IRegenerateAnswerProps {
   messageId: string
   prompt: string
+  openAiKey: string
 }
 
 interface IsendNewPromptWithoutChatIdProps {
   email: string
   prompt: string
+  openAiKey: string
 }
 
 export async function getMessagesByChatId({
@@ -43,7 +46,8 @@ export async function getMessagesByChatId({
 
 export async function sendNewPromptWithChatId({
   chatId,
-  prompt
+  prompt,
+  openAiKey
 }: ICreateNewMessageProps): Promise<INewMessageWithoutChatIdResponse> {
   const newMessageResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/messages`,
@@ -71,7 +75,7 @@ export async function sendNewPromptWithChatId({
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, openAiKey })
     }
   )
 
@@ -117,7 +121,8 @@ export async function sendNewPromptWithChatId({
 
 export async function regenerateAnswer({
   messageId,
-  prompt
+  prompt,
+  openAiKey
 }: IRegenerateAnswerProps) {
   const chatGPtResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chat`,
@@ -126,7 +131,7 @@ export async function regenerateAnswer({
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, openAiKey })
     }
   )
 
@@ -158,7 +163,8 @@ export async function regenerateAnswer({
 
 export async function sendNewPromptWithoutChatId({
   email,
-  prompt
+  prompt,
+  openAiKey
 }: IsendNewPromptWithoutChatIdProps): Promise<INewMessageWithoutChatIdResponse> {
   const chatGPtResponse = await fetch(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/chat`,
@@ -167,7 +173,7 @@ export async function sendNewPromptWithoutChatId({
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt, openAiKey })
     }
   )
 

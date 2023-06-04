@@ -6,11 +6,6 @@ import {
 } from 'openai'
 import { promptInitialInstructions } from '@/utils/promptConfig'
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
-})
-const openai = new OpenAIApi(configuration)
-
 const INITIAL_MESSAGES = [
   {
     role: ChatCompletionRequestMessageRoleEnum.System,
@@ -23,16 +18,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method !== 'POST') return res.status(405).end()
-  const { prompt } = req.body
+  const { prompt, openAiKey } = req.body
 
-  if (!prompt) {
-    return res.status(400).json({
-      error: 'Promp is required.'
-    })
+  if (!prompt || !openAiKey) {
+    return res.status(400).json({ error: 'Required values missing.' })
   }
 
   try {
-    const completion = await openai.createChatCompletion({
+    const newConfig = new Configuration({
+      apiKey: openAiKey
+    })
+
+    const newOpenai = new OpenAIApi(newConfig)
+
+    const completion = await newOpenai.createChatCompletion({
       //text-davinci-003
       model: 'gpt-3.5-turbo',
       temperature: 0,
@@ -45,9 +44,9 @@ export default async function handler(
       ]
     })
 
-    return res.status(200).json({
-      response: completion.data.choices[0].message?.content ?? ''
-    })
+    return res
+      .status(200)
+      .json({ response: completion.data.choices[0].message?.content ?? '' })
   } catch (error) {
     return res.status(500).json({ error })
   }

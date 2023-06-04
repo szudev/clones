@@ -1,6 +1,6 @@
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import { irBlack } from 'react-syntax-highlighter/dist/cjs/styles/hljs'
-import { CopiedIcon, CopyCodeIcon } from './Icons'
+import { CheckIcon, CopyCodeIcon } from './Icons'
 import { useState } from 'react'
 
 interface ICodeSnippet {
@@ -69,7 +69,7 @@ export default function CodeSnippet({ prompt }: ICodeSnippet) {
               <strong className='text-white'>{language}</strong>
               {copiedStatus[index] ? (
                 <button disabled className='flex ml-auto gap-2'>
-                  <CopiedIcon />
+                  <CheckIcon />
                   Copied!
                 </button>
               ) : (
