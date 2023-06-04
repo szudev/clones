@@ -54,6 +54,7 @@ export default function ChatFormLanding() {
             ref={textAreaRef}
             onChange={handleChange}
             rows={1}
+            name='landingTextarea'
             tabIndex={0}
             defaultValue=''
             placeholder='Send a message...'

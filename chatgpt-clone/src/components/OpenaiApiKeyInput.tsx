@@ -80,6 +80,7 @@ export default function OpenaiApiKeyInput() {
                       placeholder='Place your key here'
                       className='bg-transparent p-2 w-full outline-none'
                       autoFocus
+                      name='openaiKey'
                       ref={openaikeyInputRef}
                       onChange={handleOnChangeOpenaiKey}
                     />

@@ -57,6 +57,7 @@ export default function ChatFormDynamic() {
             ref={textAreaRef}
             onChange={handleChange}
             rows={1}
+            name='dynamicTextarea'
             tabIndex={0}
             defaultValue=''
             placeholder='Send a message...'
