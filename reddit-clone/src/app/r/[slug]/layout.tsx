@@ -3,6 +3,8 @@ import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import { format } from 'date-fns'
 import SubscribeLeaveToggle from '@/components/SubscribeLeaveToggle'
+import Link from 'next/link'
+import { buttonVariants } from '@/components/ui/Button'
 
 interface Props {
   children: React.ReactNode
@@ -108,6 +110,15 @@ export default async function Layout({ children, params }: Props) {
                   isSubscribed={isSubscribed}
                 />
               ) : null}
+              <Link
+                className={buttonVariants({
+                  variant: 'outline',
+                  className: 'w-full mb-6'
+                })}
+                href={`r/${slug}/submit`}
+              >
+                Create Post
+              </Link>
             </dl>
           </div>
         </div>
