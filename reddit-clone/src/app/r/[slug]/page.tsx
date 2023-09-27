@@ -1,3 +1,4 @@
+import PostFeed from '@/components/PostFeed'
 import TinyCreatePost from '@/components/TinyCreatePost'
 import { INFINITE_SCROLLING_PAGINATION_RESULTS } from '@/config'
 import { getAuthSession } from '@/lib/auth'
@@ -25,6 +26,9 @@ export default async function Page({ params }: Props) {
           comments: true,
           subreddit: true
         },
+        orderBy: {
+          createdAt: 'desc'
+        },
         take: INFINITE_SCROLLING_PAGINATION_RESULTS
       }
     }
@@ -38,6 +42,11 @@ export default async function Page({ params }: Props) {
         r/{subreddit.name}
       </h1>
       <TinyCreatePost session={session} />
+      <PostFeed
+        initialPosts={subreddit.posts}
+        subredditName={subreddit.name}
+        session={session}
+      />
     </>
   )
 }
