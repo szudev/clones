@@ -3,6 +3,7 @@ import { Icons } from './Icons'
 import { buttonVariants } from './ui/Button'
 import { getAuthSession } from '@/lib/auth'
 import UserProfileNav from './UserProfileNav'
+import SearchBar from './SearchBar'
 
 export default async function Navbar() {
   const session = await getAuthSession()
@@ -15,6 +16,7 @@ export default async function Navbar() {
             RedditClone
           </p>
         </Link>
+        <SearchBar />
         {session?.user ? (
           <UserProfileNav user={session.user} />
         ) : (
