@@ -27,7 +27,7 @@ export default function PostFeed({
     threshold: 1
   })
 
-  const { data, fetchNextPage, isFetchingNextPage, hasNextPage } =
+  const { data, fetchNextPage, isFetchingNextPage, hasNextPage, isFetching } =
     useInfiniteQuery(
       ['infinite-post-feeds'],
       async ({ pageParam = 1 }) => {
@@ -99,10 +99,14 @@ export default function PostFeed({
       </ul>
       {isFetchingNextPage && hasNextPage ? (
         <Loader2 className='h-8 w-8 animate-spin place-self-center text-zinc-400' />
-      ) : (
+      ) : !isFetching ? (
         <p className='flex items-center text-center text-lg place-self-center'>
           You have reached the end
         </p>
+      ) : (
+        <div className='flex h-full w-full items-center justify-center'>
+          <Loader2 className='h-10 w-10 animate-spin text-zinc-500' />
+        </div>
       )}
     </section>
   )

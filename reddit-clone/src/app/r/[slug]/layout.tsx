@@ -62,7 +62,7 @@ export default async function Layout({ children, params }: Props) {
       id: subreddit.creatorId as string
     },
     select: {
-      name: true
+      username: true
     }
   })
 
@@ -99,7 +99,7 @@ export default async function Layout({ children, params }: Props) {
                     <p className='text-gray-500'>Created by</p>
                     <dd className='text-gray-700'>
                       <div className='text-gray-900'>
-                        {subredditAuthor?.name}
+                        {subredditAuthor?.username}
                       </div>
                     </dd>
                   </>
