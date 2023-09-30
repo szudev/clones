@@ -9,21 +9,24 @@ import {
   CommandItem,
   CommandList
 } from './ui/Command'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { Prisma, Subreddit } from '@prisma/client'
-import { useRouter } from 'next/navigation'
-import { Users } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
+import { Loader2, Users } from 'lucide-react'
 import debounce from 'lodash.debounce'
+import { useOnClickOutside } from '@/hooks/use-on-click-outside'
 
 export default function SearchBar() {
   const [input, SetInput] = useState<string>('')
+  const [isTyping, setIsTyping] = useState<boolean>(false)
   const router = useRouter()
+  const commandRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname()
 
   const {
     data: queryResults,
     refetch,
-    isFetched,
     isRefetching
   } = useQuery({
     queryKey: ['search-query'],
@@ -39,14 +42,29 @@ export default function SearchBar() {
 
   const searchRequest = debounce(() => {
     refetch()
-  }, 300)
+    setIsTyping(false)
+  }, 500)
 
   const debounceSearchRequests = useCallback(() => {
     searchRequest()
+    setIsTyping(true)
   }, [])
 
+  useOnClickOutside(commandRef, () => {
+    SetInput('')
+    setIsTyping(false)
+  })
+
+  useEffect(() => {
+    SetInput('')
+    setIsTyping(false)
+  }, [pathname])
+
   return (
-    <Command className='relative rounded-full border max-w-lg z-50 overflow-visible'>
+    <Command
+      ref={commandRef}
+      className='relative rounded-lg border max-w-lg z-50 overflow-visible'
+    >
       <CommandInput
         value={input}
         onValueChange={(text) => {
@@ -57,8 +75,16 @@ export default function SearchBar() {
         placeholder='Search communities...'
       />
       {input.length > 0 ? (
-        <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-md'>
-          {isFetched && <CommandEmpty>No results found.</CommandEmpty>}
+        <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-lg'>
+          {isRefetching || isTyping ? (
+            <CommandEmpty>
+              <div className='flex justify-center'>
+                <Loader2 className='w-5 h-5 animate-spin' />
+              </div>
+            </CommandEmpty>
+          ) : (
+            <CommandEmpty>No results found.</CommandEmpty>
+          )}
           {(queryResults?.length ?? 0) > 0 ? (
             <CommandGroup heading='Subreddits'>
               {queryResults?.map((subreddit) => (

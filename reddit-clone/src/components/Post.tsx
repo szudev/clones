@@ -7,6 +7,7 @@ import { useRef } from 'react'
 import EditorOutput from './EditorOutput'
 import PostVoteClient from './post-vote/PostVoteClient'
 import { Vote } from '@prisma/client'
+import { useRouter } from 'next/navigation'
 
 type PartialVote = Pick<Vote, 'type'>
 
@@ -26,9 +27,16 @@ export default function Post({
   currentVote
 }: Props) {
   const pRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
 
   return (
-    <article className='rounded-md bg-white shadow'>
+    <article
+      className='rounded-md bg-white shadow hover:outline-1 hover:outline hover:outline-black hover:cursor-pointer'
+      onClick={(e) => {
+        e.stopPropagation()
+        router.push(`/r/${subredditName}/post/${post.id}`)
+      }}
+    >
       <div className='px-6 py-4 flex justify-between'>
         <PostVoteClient
           initialVotesAmount={votesAmount}
@@ -51,7 +59,7 @@ export default function Post({
             <span>Posted by u/{post.author.username}</span>
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
-          <a href={`/r/${subredditName}/post/${post.id}`} className=''>
+          <a href={`/r/${subredditName}/post/${post.id}`}>
             <h1 className='text-lg font-semibold py-2 leading-6 text-gray-900'>
               {post.title}
             </h1>
@@ -67,10 +75,10 @@ export default function Post({
           </div>
         </div>
       </div>
-      <div className='bg-gray-50 z-20 text-sm p-4 sm:px-6 sm:py-4'>
+      <div className='bg-gray-50 z-20 text-sm'>
         <a
           href={`/r/${subredditName}/post/${post.id}`}
-          className='w-fit flex items-center gap-2'
+          className='w-fit flex items-center gap-2 hover:bg-zinc-100 p-4 sm:px-6 sm:py-4 rounded-bl-md rounded-tr-md'
         >
           <MessageSquare className='h-4 w-4' /> {commentsCount} comments
         </a>

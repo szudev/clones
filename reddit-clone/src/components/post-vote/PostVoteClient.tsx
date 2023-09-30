@@ -79,7 +79,10 @@ export default function PostVoteClient({
   return (
     <div className='flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0'>
       <Button
-        onClick={() => vote('UP')}
+        onClick={(e) => {
+          e.stopPropagation()
+          vote('UP')
+        }}
         size='sm'
         variant='ghost'
         aria-label='upvote'
@@ -94,7 +97,10 @@ export default function PostVoteClient({
         {votesAmount}
       </p>
       <Button
-        onClick={() => vote('DOWN')}
+        onClick={(e) => {
+          e.stopPropagation()
+          vote('DOWN')
+        }}
         size='sm'
         variant='ghost'
         aria-label='downvote'
