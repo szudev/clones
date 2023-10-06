@@ -1,45 +1,46 @@
 'use client'
 
+import useCustomToast from '@/hooks/use-custom-toast'
+import { toast } from '@/hooks/use-toast'
+import { ReplyRequest } from '@/lib/validators/reply'
+import { CommentReply, ReplyVote, User } from '@prisma/client'
+import { useMutation } from '@tanstack/react-query'
+import axios, { AxiosError } from 'axios'
+import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import UserAvatar from './UserAvatar'
-import { Comment, CommentVote, User } from '@prisma/client'
 import { formatTimeToNow } from '@/lib/utils'
-import CommentVotes from './CommentVotes'
 import { Button } from './ui/Button'
-import { MessageSquare } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import useCustomToast from '@/hooks/use-custom-toast'
+import { MessageSquare } from 'lucide-react'
 import { Label } from './ui/Label'
 import { Textarea } from './ui/Textarea'
-import { useMutation } from '@tanstack/react-query'
-import { CommentRequest } from '@/lib/validators/comment'
-import axios, { AxiosError } from 'axios'
-import { toast } from '@/hooks/use-toast'
-import { useRouter } from 'next/navigation'
+import ReplyVotes from './ReplyVotes'
 import usePostReply from '@/hooks/use-post-reply'
 
-type ExtendedComment = Comment & {
-  votes: CommentVote[]
+type ExtendedReply = CommentReply & {
+  votes: ReplyVote[]
   author: User
 }
 
 interface Props {
-  comment: ExtendedComment
+  reply: ExtendedReply
   votesAmount: number
-  currentVote: CommentVote | undefined
+  currentVote: ReplyVote | undefined
+  commentId: string
 }
 
-export default function PostComment({
-  comment,
+export default function PostReply({
+  reply,
+  currentVote,
   votesAmount,
-  currentVote
+  commentId
 }: Props) {
   const commentRef = useRef<HTMLDivElement>(null)
-  const { loginRequiredToast } = useCustomToast()
   const { data: session } = useSession()
+  const { loginRequiredToast } = useCustomToast()
   const [isReplying, setIsReplying] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
-
   const { isPostReplyLoading, postReply } = usePostReply({
     setInput,
     setIsReplying
@@ -50,24 +51,24 @@ export default function PostComment({
       <div className='flex items-center'>
         <UserAvatar
           user={{
-            image: comment.author.image || null,
-            name: comment.author.name || null
+            image: reply.author.image || null,
+            name: reply.author.name || null
           }}
           className='h-6 w-6'
         />
         <div className='ml-2 flex items-center gap-x-2'>
           <p className='text-sm font-medium text-gray-900'>
-            u/{comment.author.username}
+            u/{reply.author.username}
           </p>
           <p className='max-h-40 truncate text-xs text-zinc-500'>
-            {formatTimeToNow(new Date(comment.createdAt))}
+            {formatTimeToNow(new Date(reply.createdAt))}
           </p>
         </div>
       </div>
-      <p className='text-sm text-zinc-900 mt-2'>{comment.text}</p>
+      <p className='text-sm text-zinc-900 mt-2'>{reply.text}</p>
       <div className='flex gap-2 items-center'>
-        <CommentVotes
-          commentId={comment.id}
+        <ReplyVotes
+          replyId={reply.id}
           initialVotesAmount={votesAmount}
           initialVote={currentVote}
         />
@@ -85,10 +86,10 @@ export default function PostComment({
         </Button>
         {isReplying ? (
           <div className='pt-4 grid w-full gap-1.5 flex-wrap'>
-            <Label htmlFor={`reply-${comment.id}`}>Your reply</Label>
+            <Label htmlFor={`reply-${reply.id}`}>Your reply</Label>
             <div className='mt-2'>
               <Textarea
-                id={`reply-${comment.id}`}
+                id={`reply-${reply.id}`}
                 placeholder='Add a reply here'
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -105,11 +106,11 @@ export default function PostComment({
                 </Button>
                 <Button
                   isLoading={isPostReplyLoading}
-                  disabled={input.length === 0 || isPostReplyLoading}
+                  disabled={input.length === 0}
                   onClick={() => {
                     if (!input) return
                     postReply({
-                      commentId: comment.id,
+                      commentId,
                       text: input
                     })
                   }}

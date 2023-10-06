@@ -18,7 +18,7 @@ export default function useCustomToast() {
       title: 'There was an error',
       description:
         resource && action
-          ? `Could not ${action} ${resource}.`
+          ? `Could not ${action} ${resource}, please try again`
           : 'Could not finished the operation, please try again.',
       variant: 'destructive'
     })

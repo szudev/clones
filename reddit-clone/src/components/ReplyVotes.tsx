@@ -1,26 +1,24 @@
-'use client'
-
 import useCustomToast from '@/hooks/use-custom-toast'
 import { toast } from '@/hooks/use-toast'
-import { cn } from '@/lib/utils'
-import { CommentVoteRequest } from '@/lib/validators/vote'
+import { ReplyVoteRequest } from '@/lib/validators/vote'
 import { usePrevious } from '@mantine/hooks'
-import { CommentVote, VoteType } from '@prisma/client'
+import { ReplyVote, VoteType } from '@prisma/client'
 import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
-import { ArrowBigUp, ArrowBigDown } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from './ui/Button'
+import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Props {
-  commentId: string
+  replyId: string
   initialVotesAmount: number
-  initialVote?: Pick<CommentVote, 'type'>
+  initialVote?: Pick<ReplyVote, 'type'>
 }
 
-export default function CommentVotes({
+export default function ReplyVotes({
   initialVotesAmount,
-  commentId,
+  replyId,
   initialVote
 }: Props) {
   const { loginRequiredToast } = useCustomToast()
@@ -30,12 +28,12 @@ export default function CommentVotes({
 
   const { mutate: vote, isLoading: isVoteLoading } = useMutation({
     mutationFn: async (voteType: VoteType) => {
-      const payload: CommentVoteRequest = {
-        commentId,
+      const payload: ReplyVoteRequest = {
+        replyId,
         voteType
       }
 
-      await axios.patch('/api/subreddit/post/comment/vote', payload)
+      await axios.patch('/api/subreddit/post/comment/reply/vote', payload)
     },
     onError: (err, voteType) => {
       if (voteType === 'UP') {

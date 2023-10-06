@@ -36,7 +36,7 @@ export default function Page() {
           </Button>
           <Button
             isLoading={createCommunityLoading}
-            disabled={input.length <= 2}
+            disabled={input.length <= 2 || createCommunityLoading}
             onClick={() => createCommunity()}
           >
             Create community

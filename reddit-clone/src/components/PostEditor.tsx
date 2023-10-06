@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { usePathname, useRouter } from 'next/navigation'
+import { Button } from './ui/Button'
 
 interface Props {
   subredditId: string
@@ -127,7 +128,7 @@ export default function PostEditor({ subredditId }: Props) {
     }
   }, [isMounted, initializedEditor])
 
-  const { mutate: createPost } = useMutation({
+  const { mutate: createPost, isLoading: isCreatePostLoading } = useMutation({
     mutationFn: async ({
       title,
       content,
@@ -177,26 +178,39 @@ export default function PostEditor({ subredditId }: Props) {
   const { ref: titleRef, ...rest } = register('title')
 
   return (
-    <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
-      <form
-        id='subreddit-post-form'
-        className='w-fit'
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className='prose prose-stone dark:prose-invert'>
-          <TextareaAutosize
-            ref={(e) => {
-              titleRef(e)
-              // @ts-ignore
-              editorTitleRef.current = e
-            }}
-            {...rest}
-            placeholder='Title'
-            className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
-          />
-          <div id='editor' className='min-h-[500px]' />
-        </div>
-      </form>
-    </div>
+    <>
+      <div className='w-full p-4 bg-zinc-50 rounded-lg border border-zinc-200'>
+        <form
+          id='subreddit-post-form'
+          className='w-fit'
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className='prose prose-stone dark:prose-invert'>
+            <TextareaAutosize
+              ref={(e) => {
+                titleRef(e)
+                // @ts-ignore
+                editorTitleRef.current = e
+              }}
+              {...rest}
+              placeholder='Title'
+              className='w-full resize-none appearance-none overflow-hidden bg-transparent text-5xl font-bold focus:outline-none'
+            />
+            <div id='editor' className='min-h-[500px]' />
+          </div>
+        </form>
+      </div>
+      <div className='w-full flex justify-end'>
+        <Button
+          type='submit'
+          className='w-full'
+          disabled={isCreatePostLoading}
+          isLoading={isCreatePostLoading}
+          form='subreddit-post-form'
+        >
+          Post
+        </Button>
+      </div>
+    </>
   )
 }

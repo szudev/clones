@@ -2,11 +2,13 @@
 
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import PostContentLoader from './PostContentLoader'
 
 const Output = dynamic(
   async () => (await import('editorjs-react-renderer')).default,
   {
-    ssr: false
+    ssr: false,
+    loading: () => <PostContentLoader />
   }
 )
 

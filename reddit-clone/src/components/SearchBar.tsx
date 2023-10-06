@@ -27,7 +27,8 @@ export default function SearchBar() {
   const {
     data: queryResults,
     refetch,
-    isRefetching
+    isRefetching,
+    isFetched
   } = useQuery({
     queryKey: ['search-query'],
     queryFn: async () => {
@@ -76,7 +77,7 @@ export default function SearchBar() {
       />
       {input.length > 0 ? (
         <CommandList className='absolute bg-white top-full inset-x-0 shadow rounded-b-lg'>
-          {isRefetching || isTyping ? (
+          {isRefetching || isTyping || !isFetched ? (
             <CommandEmpty>
               <div className='flex justify-center'>
                 <Loader2 className='w-5 h-5 animate-spin' />
