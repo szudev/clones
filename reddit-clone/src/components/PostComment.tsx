@@ -11,11 +11,6 @@ import { useSession } from 'next-auth/react'
 import useCustomToast from '@/hooks/use-custom-toast'
 import { Label } from './ui/Label'
 import { Textarea } from './ui/Textarea'
-import { useMutation } from '@tanstack/react-query'
-import { CommentRequest } from '@/lib/validators/comment'
-import axios, { AxiosError } from 'axios'
-import { toast } from '@/hooks/use-toast'
-import { useRouter } from 'next/navigation'
 import usePostReply from '@/hooks/use-post-reply'
 
 type ExtendedComment = Comment & {

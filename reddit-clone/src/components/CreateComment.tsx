@@ -13,19 +13,17 @@ import { useRouter } from 'next/navigation'
 
 interface Props {
   postId: string
-  replyToId?: string
 }
 
-export default function CreateComment({ postId, replyToId }: Props) {
+export default function CreateComment({ postId }: Props) {
   const [input, setInput] = useState<string>('')
   const { loginRequiredToast } = useCustomToast()
   const router = useRouter()
   const { mutate: comment, isLoading: isCommentLoading } = useMutation({
-    mutationFn: async ({ postId, text, replyToId }: CommentRequest) => {
+    mutationFn: async ({ postId, text }: CommentRequest) => {
       const payload: CommentRequest = {
         postId,
-        text,
-        replyToId
+        text
       }
       const { data } = await axios.patch(`/api/subreddit/post/comment`, payload)
 
@@ -68,7 +66,7 @@ export default function CreateComment({ postId, replyToId }: Props) {
           <Button
             isLoading={isCommentLoading}
             disabled={input.length === 0}
-            onClick={() => comment({ postId, text: input, replyToId })}
+            onClick={() => comment({ postId, text: input })}
           >
             Post
           </Button>

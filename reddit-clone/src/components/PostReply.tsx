@@ -1,12 +1,7 @@
 'use client'
 
 import useCustomToast from '@/hooks/use-custom-toast'
-import { toast } from '@/hooks/use-toast'
-import { ReplyRequest } from '@/lib/validators/reply'
 import { CommentReply, ReplyVote, User } from '@prisma/client'
-import { useMutation } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
-import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 import UserAvatar from './UserAvatar'
 import { formatTimeToNow } from '@/lib/utils'
