@@ -77,7 +77,7 @@ export default function PostVoteClient({
   })
 
   return (
-    <div className='flex sm:flex-col gap-4 sm:gap-0 pr-6 sm:w-20 pb-4 sm:pb-0'>
+    <div className='flex items-center gap-1 justify-center md:flex-col'>
       <Button
         onClick={(e) => {
           e.stopPropagation()
@@ -93,7 +93,7 @@ export default function PostVoteClient({
           })}
         />
       </Button>
-      <p className='text-center py-2 font-medium text-sm text-zinc-900'>
+      <p className='text-center font-medium text-sm text-zinc-900'>
         {votesAmount}
       </p>
       <Button

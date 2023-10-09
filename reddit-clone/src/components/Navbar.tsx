@@ -20,8 +20,13 @@ export default async function Navbar() {
         {session?.user ? (
           <UserProfileNav user={session.user} />
         ) : (
-          <Link href='/sign-in' className={buttonVariants()}>
-            Sign In
+          <Link
+            href='/sign-in'
+            className={buttonVariants({
+              className: ''
+            })}
+          >
+            Login
           </Link>
         )}
       </div>

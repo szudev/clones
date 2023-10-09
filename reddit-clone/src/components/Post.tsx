@@ -37,13 +37,15 @@ export default function Post({
         router.push(`/r/${subredditName}/post/${post.id}`)
       }}
     >
-      <div className='px-6 py-4 flex justify-between'>
-        <PostVoteClient
-          initialVotesAmount={votesAmount}
-          postId={post.id}
-          initialVote={currentVote?.type}
-        />
-        <div className='w-0 flex-1'>
+      <div className='grid md:inline-grid md:grid-cols-[min-content_auto] md:gap-2 grid-cols-3 w-full px-3 py-2'>
+        <div className='hidden md:flex items-center col-start-1 col-end-2 w-full gap-2'>
+          <PostVoteClient
+            initialVotesAmount={votesAmount}
+            postId={post.id}
+            initialVote={currentVote?.type}
+          />
+        </div>
+        <div className='col-start-1 col-end-4 md:col-start-2 md:col-end-4'>
           <div className='max-h-40 mt-1 text-xs text-gray-500 gap-1 items-center flex'>
             {subredditName ? (
               <>
@@ -73,15 +75,31 @@ export default function Post({
               <div className='absolute bottom-0 left-0 h-24 w-full bg-gradient-to-t from-white to-transparent' />
             ) : null}
           </div>
+          <div className='hidden md:block z-20 text-sm'>
+            <a
+              href={`/r/${subredditName}/post/${post.id}`}
+              className='w-fit flex items-center gap-2 hover:bg-zinc-100 py-4'
+            >
+              <MessageSquare className='h-4 w-4' /> {commentsCount}
+              <p className='hidden md:block'>comments</p>
+            </a>
+          </div>
         </div>
-      </div>
-      <div className='bg-gray-50 z-20 text-sm'>
-        <a
-          href={`/r/${subredditName}/post/${post.id}`}
-          className='w-fit flex items-center gap-2 hover:bg-zinc-100 p-4 sm:px-6 sm:py-4 rounded-bl-md rounded-tr-md'
-        >
-          <MessageSquare className='h-4 w-4' /> {commentsCount} comments
-        </a>
+        <div className='flex md:hidden items-center col-start-1 col-end-4 md:col-start-2 md:col-end-4 w-full gap-2'>
+          <PostVoteClient
+            initialVotesAmount={votesAmount}
+            postId={post.id}
+            initialVote={currentVote?.type}
+          />
+          <div className='z-20 text-sm'>
+            <a
+              href={`/r/${subredditName}/post/${post.id}`}
+              className='w-fit flex items-center gap-2 hover:bg-zinc-100 sm:px-6 sm:py-4'
+            >
+              <MessageSquare className='h-4 w-4' /> {commentsCount}
+            </a>
+          </div>
+        </div>
       </div>
     </article>
   )
