@@ -61,24 +61,26 @@ export default function PostReply({
         </div>
       </div>
       <p className='text-sm text-zinc-900 mt-2'>{reply.text}</p>
-      <div className='flex gap-2 items-center'>
-        <ReplyVotes
-          replyId={reply.id}
-          initialVotesAmount={votesAmount}
-          initialVote={currentVote}
-        />
-        <Button
-          variant='ghost'
-          size='xs'
-          aria-label='reply'
-          onClick={() => {
-            if (!session) return loginRequiredToast()
-            setIsReplying((prev) => !prev)
-          }}
-        >
-          <MessageSquare className='h-4 w-4 mr-1.5' />
-          Reply
-        </Button>
+      <div className='flex gap-2 flex-col'>
+        <div className='flex gap-2 items-start'>
+          <ReplyVotes
+            replyId={reply.id}
+            initialVotesAmount={votesAmount}
+            initialVote={currentVote}
+          />
+          <Button
+            variant='ghost'
+            size='xs'
+            aria-label='reply'
+            onClick={() => {
+              if (!session) return loginRequiredToast()
+              setIsReplying((prev) => !prev)
+            }}
+          >
+            <MessageSquare className='h-4 w-4 mr-1.5' />
+            Reply
+          </Button>
+        </div>
         {isReplying ? (
           <div className='pt-4 grid w-full gap-1.5 flex-wrap'>
             <Label htmlFor={`reply-${reply.id}`}>Your reply</Label>
@@ -110,7 +112,7 @@ export default function PostReply({
                     })
                   }}
                 >
-                  Post
+                  Reply
                 </Button>
               </div>
             </div>

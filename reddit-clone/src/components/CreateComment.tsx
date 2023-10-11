@@ -65,7 +65,7 @@ export default function CreateComment({ postId }: Props) {
         <div className='mt-2 flex justify-end'>
           <Button
             isLoading={isCommentLoading}
-            disabled={input.length === 0}
+            disabled={input.length === 0 || isCommentLoading}
             onClick={() => comment({ postId, text: input })}
           >
             Post

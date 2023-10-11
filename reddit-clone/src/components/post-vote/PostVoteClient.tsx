@@ -32,7 +32,7 @@ export default function PostVoteClient({
     setCurrentVote(initialVote)
   }, [initialVote])
 
-  const { mutate: vote } = useMutation({
+  const { mutate: vote, isLoading: isVoteLoading } = useMutation({
     mutationFn: async (voteType: VoteType) => {
       const payload: PostVoteRequest = {
         postId,
@@ -86,6 +86,7 @@ export default function PostVoteClient({
         size='sm'
         variant='ghost'
         aria-label='upvote'
+        disabled={isVoteLoading}
       >
         <ArrowBigUp
           className={cn('h-5 w-5 text-zinc-700', {
@@ -104,6 +105,7 @@ export default function PostVoteClient({
         size='sm'
         variant='ghost'
         aria-label='downvote'
+        disabled={isVoteLoading}
       >
         <ArrowBigDown
           className={cn('h-5 w-5 text-zinc-700', {

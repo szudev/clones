@@ -67,7 +67,7 @@ export default async function Layout({ children, params }: Props) {
   })
 
   return (
-    <div className='sm:container max-w-7xl mx-auto h-full pt-12'>
+    <div className='sm:container max-w-7xl mx-auto h-full pt-0 md:pt-12'>
       <div>
         <ToFeedButton />
         <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6'>

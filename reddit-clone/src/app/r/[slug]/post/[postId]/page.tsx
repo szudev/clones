@@ -1,14 +1,12 @@
 import CommentSectionLoader from '@/components/CommentSectionLoader'
 import CommentsSection from '@/components/CommentsSection'
 import EditorOutput from '@/components/EditorOutput'
-import PostVoteServer from '@/components/post-vote/PostVoteServer'
-import { buttonVariants } from '@/components/ui/Button'
+import SuspensePostVoteServer from '@/components/SuspensePostVoteServer'
 import { db } from '@/lib/db'
 import { redis } from '@/lib/redis'
 import { formatTimeToNow } from '@/lib/utils'
 import { CachedPost } from '@/types/redis'
 import { Post, User, Vote } from '@prisma/client'
-import { ArrowBigDown, ArrowBigUp, Loader2 } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -42,55 +40,30 @@ export default async function Page({ params }: Props) {
   if (!post && !cachedPost) return notFound()
 
   return (
-    <div>
-      <div className='h-full flex flex-col sm:flex-row items-center sm:items-start justify-between'>
-        <Suspense fallback={<PostVoteSkeleton />}>
+    <section className='bg-white rounded-md grid grid-rows-[repeat(5,minmax(0,auto))] md:grid-rows-[repeat(4,minmax(0,auto))] grid-cols-1 md:grid-cols-[min-content_auto] w-full flex-1 p-4'>
+      <div className='flex items-start w-full h-full row-start-4 md:row-start-1 md:row-end-4'>
+        <SuspensePostVoteServer
+          cachedPost={cachedPost}
+          postId={postId}
+          post={post}
+        />
+      </div>
+      <p className='max-h-40 mt-1 truncate text-xs text-gray-500 row-start-1 md:col-start-2'>
+        Posted by u/{post?.author.username ?? cachedPost.authorUsername}{' '}
+        {formatTimeToNow(new Date(post?.createdAt ?? cachedPost.createdAt))}
+      </p>
+      <h1 className='text-xl font-semibold py-2 leading-6 text-gray-900 row-start-2 md:col-start-2'>
+        {post?.title ?? cachedPost.title}
+      </h1>
+      <article className='w-full h-full md:row-start-3 md:col-start-2'>
+        <EditorOutput content={post?.content ?? cachedPost.content} />
+      </article>
+      <div className='w-full h-full md:row-start-4 md:col-span-2'>
+        <Suspense fallback={<CommentSectionLoader />}>
           {/* @ts-expect-error */}
-          <PostVoteServer
-            postId={post?.id ?? cachedPost.id}
-            getData={async () => {
-              return await db.post.findUnique({
-                where: {
-                  id: postId
-                },
-                include: {
-                  votes: true
-                }
-              })
-            }}
-          />
+          <CommentsSection postId={post?.id ?? cachedPost.id} />
         </Suspense>
-        <div className='sm:w-0 w-full flex-1 bg-white p-4 rounded-md'>
-          <p className='max-h-40 mt-1 truncate text-xs text-gray-500'>
-            Posted by u/{post?.author.username ?? cachedPost.authorUsername}{' '}
-            {formatTimeToNow(new Date(post?.createdAt ?? cachedPost.createdAt))}
-          </p>
-          <h1 className='text-xl font-semibold py-2 leading-6 text-gray-900'>
-            {post?.title ?? cachedPost.title}
-          </h1>
-          <EditorOutput content={post?.content ?? cachedPost.content} />
-          <Suspense fallback={<CommentSectionLoader />}>
-            {/* @ts-expect-error */}
-            <CommentsSection postId={post?.id ?? cachedPost.id} />
-          </Suspense>
-        </div>
       </div>
-    </div>
-  )
-}
-
-function PostVoteSkeleton() {
-  return (
-    <div className='flex items-center flex-col pr-6 w-20'>
-      <div className={buttonVariants({ variant: 'ghost' })}>
-        <ArrowBigUp className='h-5 w-5 text-zinc-600' />
-      </div>
-      <div className='text-center py-2 font-medium text-sm text-zinc-900'>
-        <Loader2 className='h-3 w-3 animate-spin' />
-      </div>
-      <div className={buttonVariants({ variant: 'ghost' })}>
-        <ArrowBigDown className='h-5 w-5 text-zinc-600' />
-      </div>
-    </div>
+    </section>
   )
 }
