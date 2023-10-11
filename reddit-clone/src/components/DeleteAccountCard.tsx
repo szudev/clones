@@ -47,7 +47,7 @@ export default function DeleteAccountCard({ user }: Props) {
           website. This action is not reversible.
         </CardDescription>
       </CardHeader>
-      <CardFooter className='flex justify-end items-center bg-[#FEF0F0] bg-blend-multiply rounded-b-lg py-2'>
+      <CardFooter className='flex justify-center md:justify-end items-center bg-[#FEF0F0] bg-blend-multiply rounded-b-lg py-2'>
         <Button
           onClick={() => deleteAccount()}
           isLoading={isDeleteAccountLoading}

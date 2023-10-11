@@ -106,7 +106,7 @@ export default function UserNameForm({ user }: Props) {
             </Label>
             <Input
               id='username'
-              className='w-[400px] pl-6'
+              className='w-full pl-6'
               size={32}
               {...register('username')}
             />

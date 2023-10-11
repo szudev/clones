@@ -12,11 +12,9 @@ export default async function Page() {
   const session = await getAuthSession()
   if (!session?.user) return redirect(authOptions.pages?.signIn || 'sign-in')
   return (
-    <section className='max-w-4xl mx-auto py-12'>
-      <div className='grid items-start gap-8'>
-        <h1 className='font-bold text-3xl md:text-4xl'>Settings</h1>
-      </div>
-      <div className='grid gap-10'>
+    <section className='flex flex-col max-w-4xl mx-auto md:py-12 pb-6 gap-4'>
+      <h1 className='font-bold text-3xl md:text-4xl'>Settings</h1>
+      <div className='flex flex-col gap-4'>
         <UserNameForm
           user={{ id: session.user.id, username: session.user.username || '' }}
         />
