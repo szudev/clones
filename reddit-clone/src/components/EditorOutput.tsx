@@ -51,7 +51,7 @@ function CustomImageRenderer({ data }: any) {
 
 function CustomCodeRenderer({ data }: any) {
   return (
-    <pre className='bg-gray-800 rounded-md p-4'>
+    <pre className='bg-gray-800 rounded-md p-4 overflow-x-auto'>
       <code className='text-gray-100 text-sm'>{data.code}</code>
     </pre>
   )

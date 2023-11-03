@@ -98,9 +98,12 @@ export default async function Layout({ children, params }: Props) {
                   <>
                     <p className='text-gray-500'>Created by</p>
                     <dd className='text-gray-700'>
-                      <div className='text-gray-900'>
+                      <Link
+                        className='text-gray-900 cursor-pointer'
+                        href={`/user/${subredditAuthor?.username}`}
+                      >
                         {subredditAuthor?.username}
-                      </div>
+                      </Link>
                     </dd>
                   </>
                 )}

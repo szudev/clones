@@ -1,4 +1,5 @@
 import PostEditor from '@/components/PostEditor'
+import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 
@@ -18,6 +19,23 @@ export default async function Page({ params }: Props) {
 
   if (!subreddit) return notFound()
 
+  const session = await getAuthSession()
+
+  const subscription = !session?.user
+    ? undefined
+    : await db.subscription.findFirst({
+        where: {
+          subreddit: {
+            name: subredditName
+          },
+          user: {
+            id: session.user.id
+          }
+        }
+      })
+
+  const isSubscribed = !!subscription
+
   return (
     <div className='flex flex-col items-start gap-6'>
       <div className='border-b border-gray-200 pb-5'>
@@ -31,7 +49,7 @@ export default async function Page({ params }: Props) {
         </div>
       </div>
       {/* form */}
-      <PostEditor subredditId={subreddit.id} />
+      <PostEditor subredditId={subreddit.id} isSubscribed={isSubscribed} />
     </div>
   )
 }

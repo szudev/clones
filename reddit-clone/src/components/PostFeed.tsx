@@ -1,14 +1,12 @@
 'use client'
 
-import { INFINITE_SCROLLING_PAGINATION_RESULTS } from '@/config'
 import { ExtendedPost } from '@/types/db'
 import { useIntersection } from '@mantine/hooks'
-import { useInfiniteQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import { Session } from 'next-auth'
 import { useEffect, useRef } from 'react'
 import Post from './Post'
 import { Loader2 } from 'lucide-react'
+import useFetchFeedPosts from '@/hooks/use-fetch-feed-posts'
 
 interface Props {
   initialPosts: ExtendedPost[]
@@ -34,26 +32,7 @@ export default function PostFeed({
     hasNextPage,
     isFetching,
     isFetchedAfterMount
-  } = useInfiniteQuery(
-    ['infinite-post-feeds'],
-    async ({ pageParam = 1 }) => {
-      const query =
-        `/api/posts?limit=${INFINITE_SCROLLING_PAGINATION_RESULTS}&page=${pageParam}` +
-        (!!subredditName ? `&subredditName=${subredditName}` : '')
-
-      const { data } = await axios.get(query)
-      return data as ExtendedPost[]
-    },
-    {
-      getNextPageParam: (_, pages) => {
-        return pages.length + 1
-      },
-      initialData: {
-        pages: [initialPosts],
-        pageParams: [1]
-      }
-    }
-  )
+  } = useFetchFeedPosts({ subredditName })
 
   useEffect(() => {
     if (entry?.isIntersecting && hasNextPage) {
@@ -61,7 +40,7 @@ export default function PostFeed({
     }
   }, [entry, hasNextPage, fetchNextPage])
 
-  const posts = data?.pages.flatMap((page) => page) ?? initialPosts
+  const posts = data?.pages.flatMap((page) => page.posts) ?? initialPosts
 
   return (
     <section className='flex flex-col w-full col-span-2 gap-10'>
@@ -70,7 +49,9 @@ export default function PostFeed({
           <Loader2 className='h-10 w-10 animate-spin text-zinc-500' />
         </div>
       ) : posts.length === 0 ? (
-        <p>There is no posts yet.</p>
+        <p className='flex items-center text-center text-lg place-self-center'>
+          There is no posts yet.
+        </p>
       ) : (
         <ul className='flex flex-col space-y-6'>
           {posts.map((post, index) => {

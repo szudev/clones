@@ -43,7 +43,7 @@ export async function GET(request: Request) {
           name: subredditName
         }
       }
-    } else if (session) {
+    } else if (session && followedCommunitiesIds.length > 0) {
       whereClause = {
         subreddit: {
           id: {
@@ -53,9 +53,12 @@ export async function GET(request: Request) {
       }
     }
 
+    const take = parseInt(limit)
+    const skip = (parseInt(page) - 1) * parseInt(limit)
+
     const posts = await db.post.findMany({
-      take: parseInt(limit),
-      skip: (parseInt(page) - 1) * parseInt(limit),
+      take,
+      skip,
       orderBy: {
         createdAt: 'desc'
       },
@@ -68,7 +71,15 @@ export async function GET(request: Request) {
       where: whereClause
     })
 
-    return new Response(JSON.stringify(posts))
+    const totalPosts = await db.post.count({
+      where: whereClause
+    })
+
+    const hasNextPage = skip + take < totalPosts
+
+    return new Response(
+      JSON.stringify({ posts, currentPage: page, hasNextPage })
+    )
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new Response('Invalid GET search params data', { status: 422 })

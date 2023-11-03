@@ -58,7 +58,13 @@ export default function Post({
                 <span>•</span>
               </>
             ) : null}
-            <span>Posted by u/{post.author.username}</span>
+            Posted by
+            <a
+              href={`/user/${post.author.username}`}
+              className='hover:underline hover:underline-offset-2'
+            >
+              u/{post.author.username}
+            </a>
             {formatTimeToNow(new Date(post.createdAt))}
           </div>
           <a href={`/r/${subredditName}/post/${post.id}`}>
@@ -91,7 +97,7 @@ export default function Post({
             postId={post.id}
             initialVote={currentVote?.type}
           />
-          <div className='z-20 text-sm'>
+          <div className='text-sm'>
             <a
               href={`/r/${subredditName}/post/${post.id}`}
               className='w-fit flex items-center gap-2 hover:bg-zinc-100 sm:px-6 sm:py-4'

@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       return new Response(
         'You have to be subscribed to post in this subreddit.',
         {
-          status: 400
+          status: 403
         }
       )
     }

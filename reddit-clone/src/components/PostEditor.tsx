@@ -9,15 +9,16 @@ import type EditorJS from '@editorjs/editorjs'
 import { uploadFiles } from '@/lib/uploadthing'
 import { toast } from '@/hooks/use-toast'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from './ui/Button'
 
 interface Props {
   subredditId: string
+  isSubscribed: boolean
 }
 
-export default function PostEditor({ subredditId }: Props) {
+export default function PostEditor({ subredditId, isSubscribed }: Props) {
   const {
     register,
     handleSubmit,
@@ -142,7 +143,17 @@ export default function PostEditor({ subredditId }: Props) {
       const { data } = await axios.post('/api/subreddit/post/create', payload)
       return data
     },
-    onError: () => {
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 403) {
+          return toast({
+            title: 'Subscription required',
+            description:
+              'You have to be subscripted to the subreddit in order to create a post.',
+            variant: 'destructive'
+          })
+        }
+      }
       return toast({
         title: 'Something went wrong',
         description: 'Your post was not published, please try again later.',
@@ -162,6 +173,12 @@ export default function PostEditor({ subredditId }: Props) {
   })
 
   const onSubmit = async (data: PostCreationRequest) => {
+    if (!isSubscribed)
+      return toast({
+        title: 'Subscription required',
+        description:
+          'You have to be subscripted to the subreddit in order to create a post.'
+      })
     const blocks = await ref.current?.save()
     const payload: PostCreationRequest = {
       title: data.title,
@@ -204,11 +221,11 @@ export default function PostEditor({ subredditId }: Props) {
         <Button
           type='submit'
           className='w-full'
-          disabled={isCreatePostLoading}
+          disabled={isCreatePostLoading || !isSubscribed}
           isLoading={isCreatePostLoading}
           form='subreddit-post-form'
         >
-          Post
+          {isSubscribed ? 'Post' : 'Subscribe to post'}
         </Button>
       </div>
     </>
