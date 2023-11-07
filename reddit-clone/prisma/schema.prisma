@@ -55,6 +55,7 @@ model User {
   CommentReply      CommentReply[]
   replyVote         ReplyVote[]
   Subscription      Subscription[]
+  createdAt         DateTime       @default(now())
 }
 
 model Subreddit {
