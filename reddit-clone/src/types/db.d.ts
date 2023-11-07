@@ -19,3 +19,11 @@ export type ExtendedReply = CommentReply & {
   author: User
   votes: ReplyVote[]
 }
+
+export type ExtendedSubreddit = Subreddit & {
+  creator: User | null
+  _count: {
+    posts: number
+    subscribers: number
+  }
+}

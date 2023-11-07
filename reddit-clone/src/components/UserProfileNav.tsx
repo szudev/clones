@@ -13,7 +13,10 @@ import Link from 'next/link'
 import { signOut } from 'next-auth/react'
 
 interface Props {
-  user: Pick<User, 'name' | 'image' | 'email'>
+  user: User & {
+    id: string
+    username?: string | null | undefined
+  }
 }
 
 export default function UserProfileNav({ user }: Props) {
@@ -37,6 +40,9 @@ export default function UserProfileNav({ user }: Props) {
           </div>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem className='cursor-pointer' asChild>
+          <Link href={`/user/${user.username}`}>Profile</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className='cursor-pointer' asChild>
           <Link href='/'>Feed</Link>
         </DropdownMenuItem>

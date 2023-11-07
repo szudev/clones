@@ -1,6 +1,6 @@
-import ProfilePageNav from '@/components/ProfilePageNav'
 import UserAvatar from '@/components/UserAvatar'
 import { db } from '@/lib/db'
+import { formatTimeToCreatedAt } from '@/lib/utils'
 import { Cake } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
@@ -48,11 +48,14 @@ export default async function Layout({ children, params }: Props) {
     }
   })
 
+  const subscriptionCount = await db.subscription.count({
+    where: {
+      userId: user.id
+    }
+  })
+
   return (
-    <div className='flex flex-col w-full max-w-4xl mx-auto items-center py-4 gap-2'>
-      <div className='flex flex-col gap-2 self-start'>
-        <ProfilePageNav />
-      </div>
+    <div className='flex flex-col w-full max-w-4xl mx-auto items-center py-4'>
       <div className='grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-x-4 py-6 w-full'>
         {children}
         <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
@@ -69,7 +72,7 @@ export default async function Layout({ children, params }: Props) {
                   <Cake className='text-[#1071C4] h-6 w-6' />
                   <p className='text-zinc-500'>Cake day</p>
                 </div>
-                <p>{}</p>
+                <p>{formatTimeToCreatedAt(user.createdAt)}</p>
               </div>
               <div className='flex justify-between items-center'>
                 <p className='text-zinc-500'>Created subreddits</p>
@@ -78,6 +81,12 @@ export default async function Layout({ children, params }: Props) {
               <div className='flex justify-between items-center'>
                 <p className='text-zinc-500'>Created posts</p>
                 <p className='text-zinc-500 place-self-end'>{postsCount}</p>
+              </div>
+              <div className='flex justify-between items-center'>
+                <p className='text-zinc-500'>Subscriptions</p>
+                <p className='text-zinc-500 place-self-end'>
+                  {subscriptionCount}
+                </p>
               </div>
             </div>
           </div>
