@@ -6,17 +6,30 @@ import { useEffect, useState } from 'react'
 import PostReply from './PostReply'
 import { Session } from 'next-auth'
 import { Loader2, ChevronDown, ChevronUp } from 'lucide-react'
+import { UseMutateFunction } from '@tanstack/react-query'
 
 interface Props {
   repliesAmount: number
   commentId: string
   session: Session | null
+  isPostReplyLoading: boolean
+  postReply: UseMutateFunction<
+    any,
+    unknown,
+    {
+      commentId: string
+      text: string
+    },
+    unknown
+  >
 }
 
 export default function PostReplies({
   repliesAmount,
   commentId,
-  session
+  session,
+  isPostReplyLoading,
+  postReply
 }: Props) {
   const {
     data,
@@ -27,19 +40,18 @@ export default function PostReplies({
     refetch,
     isRefetching
   } = useFetchCommentReplies({ commentId })
+
   const [showReplies, setShowReplies] = useState<boolean>(false)
-  const [fetchReplies, setFetchReplies] = useState<boolean>(false)
+  const [initialRefetch, setInitialRefetch] = useState<boolean>(false)
 
   const handleShowReplies = () => {
-    setShowReplies((prev) => {
-      if (!fetchReplies) setFetchReplies(true)
-      return !prev
-    })
+    setShowReplies((prev) => !prev)
+    if (!initialRefetch) setInitialRefetch(true)
   }
 
   useEffect(() => {
-    if (fetchReplies) refetch()
-  }, [fetchReplies, refetch])
+    if (initialRefetch) refetch()
+  }, [initialRefetch, refetch])
 
   const replies = data?.pages.flatMap((page) => page.replies)
   return (
@@ -58,7 +70,7 @@ export default function PostReplies({
           ? repliesAmount + ' reply'
           : repliesAmount + ' replies'}
       </Button>
-      {(isRefetching || isFetching) && fetchReplies && !isFetchingNextPage && (
+      {(isRefetching || isFetching) && !replies && initialRefetch && (
         <div className='flex h-full self-start ml-2 py-2 pl-4 items-center justify-center'>
           <Loader2 className='h-8 w-8 animate-spin text-zinc-500' />
         </div>
@@ -85,6 +97,8 @@ export default function PostReplies({
                   currentVote={replyVote}
                   votesAmount={replyVotesAmount}
                   commentId={commentId}
+                  isPostReplyLoading={isPostReplyLoading}
+                  postReply={postReply}
                 />
               </div>
             )

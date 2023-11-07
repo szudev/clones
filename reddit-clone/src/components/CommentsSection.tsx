@@ -2,8 +2,6 @@ import { getAuthSession } from '@/lib/auth'
 import { db } from '@/lib/db'
 import PostComment from './PostComment'
 import CreateComment from './CreateComment'
-import PostReply from './PostReply'
-import PostReplies from './PostReplies'
 
 interface Props {
   postId: string
@@ -53,15 +51,10 @@ export default async function CommentsSection({ postId }: Props) {
                   comment={comment}
                   votesAmount={commentVotesAmount}
                   currentVote={commentVote}
-                />
-              </div>
-              {repliesAmount > 0 && (
-                <PostReplies
                   repliesAmount={repliesAmount}
-                  commentId={comment.id}
                   session={session}
                 />
-              )}
+              </div>
             </article>
           )
         })}

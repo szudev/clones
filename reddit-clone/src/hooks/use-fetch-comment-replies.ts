@@ -15,7 +15,7 @@ export default function useFetchCommentReplies({ commentId }: Props) {
     refetch,
     isRefetching
   } = useInfiniteQuery(
-    [`infinite-comment-${commentId}-replies`],
+    ['infinite-comment-replies', commentId],
     async ({ pageParam }) => await getCommentReplies({ commentId, pageParam }),
     {
       getNextPageParam: (lastPage) => {

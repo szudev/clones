@@ -11,7 +11,7 @@ import { MessageSquare } from 'lucide-react'
 import { Label } from './ui/Label'
 import { Textarea } from './ui/Textarea'
 import ReplyVotes from './ReplyVotes'
-import usePostReply from '@/hooks/use-post-reply'
+import { UseMutateFunction } from '@tanstack/react-query'
 
 type ExtendedReply = CommentReply & {
   votes: ReplyVote[]
@@ -23,23 +23,31 @@ interface Props {
   votesAmount: number
   currentVote: ReplyVote | undefined
   commentId: string
+  isPostReplyLoading: boolean
+  postReply: UseMutateFunction<
+    any,
+    unknown,
+    {
+      commentId: string
+      text: string
+    },
+    unknown
+  >
 }
 
 export default function PostReply({
   reply,
   currentVote,
   votesAmount,
-  commentId
+  commentId,
+  isPostReplyLoading,
+  postReply
 }: Props) {
   const commentRef = useRef<HTMLDivElement>(null)
   const { data: session } = useSession()
   const { loginRequiredToast } = useCustomToast()
   const [isReplying, setIsReplying] = useState<boolean>(false)
   const [input, setInput] = useState<string>('')
-  const { isPostReplyLoading, postReply } = usePostReply({
-    setInput,
-    setIsReplying
-  })
 
   return (
     <div ref={commentRef} className='flex flex-col'>
@@ -103,7 +111,7 @@ export default function PostReply({
                 </Button>
                 <Button
                   isLoading={isPostReplyLoading}
-                  disabled={input.length === 0}
+                  disabled={input.length === 0 || isPostReplyLoading}
                   onClick={() => {
                     if (!input) return
                     postReply({

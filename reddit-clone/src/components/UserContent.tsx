@@ -18,7 +18,7 @@ export default function UserContent({ posts, session, username }: Props) {
     subscriptions: subscriptionsState
   } = useProfileNavStore((state) => state.active)
   return (
-    <section className='flex flex-col w-full gap-1'>
+    <section className='flex flex-col w-full col-span-2 gap-1'>
       {postsState && (
         <UserPosts initialPosts={posts} session={session} username={username} />
       )}
