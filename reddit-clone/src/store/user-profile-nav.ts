@@ -4,18 +4,15 @@ interface UserProfileNavState {
   active: {
     subreddits: boolean
     posts: boolean
-    subscriptions: boolean
   }
   setSubredditsActive: () => void
   setPostsActive: () => void
-  setSubscriptionsActive: () => void
 }
 
 export const useProfileNavStore = create<UserProfileNavState>((set) => ({
   active: {
     posts: true,
-    subreddits: false,
-    subscriptions: false
+    subreddits: false
   },
   setSubredditsActive: () =>
     set((state) => ({
@@ -33,15 +30,6 @@ export const useProfileNavStore = create<UserProfileNavState>((set) => ({
         posts: state.active.posts ? false : true,
         subreddits: false,
         subscriptions: false
-      }
-    })),
-  setSubscriptionsActive: () =>
-    set((state) => ({
-      active: {
-        ...state.active,
-        subscriptions: state.active.subscriptions ? false : true,
-        posts: false,
-        subreddits: false
       }
     }))
 }))

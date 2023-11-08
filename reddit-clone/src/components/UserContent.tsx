@@ -14,11 +14,9 @@ interface Props {
 }
 
 export default function UserContent({ posts, session, username }: Props) {
-  const {
-    posts: postsState,
-    subreddits: subredditsState,
-    subscriptions: subscriptionsState
-  } = useProfileNavStore((state) => state.active)
+  const { posts: postsState, subreddits: subredditsState } = useProfileNavStore(
+    (state) => state.active
+  )
   return (
     <section className='flex flex-col w-full col-span-2 gap-4'>
       <div className='flex flex-col gap-2 self-center md:self-start'>
@@ -28,7 +26,6 @@ export default function UserContent({ posts, session, username }: Props) {
         <UserPosts initialPosts={posts} session={session} username={username} />
       )}
       {subredditsState && <UserSubreddits username={username} />}
-      {subscriptionsState && <p>Subscriptions True</p>}
     </section>
   )
 }

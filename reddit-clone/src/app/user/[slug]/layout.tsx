@@ -61,7 +61,7 @@ export default async function Layout({ children, params }: Props) {
         <div className='overflow-hidden h-fit rounded-lg border border-gray-200 order-first md:order-last'>
           <div className='bg-[#1071C4] px-6 py-4 relative h-16 mb-8'>
             <div className='flex items-center absolute bottom-0 left-0 translate-y-1/2 px-6'>
-              <UserAvatar user={user} className='w-16 h-16' />
+              <UserAvatar user={user} className='w-16 h-16' sizes='64px' />
             </div>
           </div>
           <div className='-my-3 px-6 py-4 text-sm leading-6'>

@@ -25,6 +25,7 @@ export default function UserProfileNav({ user }: Props) {
       <DropdownMenuTrigger>
         <UserAvatar
           className='h-8 w-8'
+          sizes='32px'
           user={{ name: user.name || null, image: user.image || null }}
         />
       </DropdownMenuTrigger>

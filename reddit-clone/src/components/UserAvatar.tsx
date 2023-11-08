@@ -6,9 +6,10 @@ import { AvatarProps } from '@radix-ui/react-avatar'
 
 interface Props extends AvatarProps {
   user: Pick<User, 'name' | 'image'>
+  sizes?: string
 }
 
-export default function UserAvatar({ user, ...props }: Props) {
+export default function UserAvatar({ user, sizes, ...props }: Props) {
   return (
     <Avatar {...props}>
       {user.image ? (
@@ -18,6 +19,7 @@ export default function UserAvatar({ user, ...props }: Props) {
             src={user.image}
             alt='profile picture'
             referrerPolicy='no-referrer'
+            sizes={sizes}
           />
         </div>
       ) : (
