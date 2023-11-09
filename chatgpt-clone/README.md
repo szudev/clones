@@ -22,9 +22,4 @@
 
 ## 👀 Por hacer:
 
-    - Generar la QUERY con prisma para guardar la respuesta de la IA.
-    - Generar y guardar las respuestas de la IA que retorna la API de OPENIA en la base de datos.
-    - Generar la ruta HTTP para guardar la respuesta de la IA en la API.
-    - Generar el servicio de sendPrompt para llamar la API.
-    - Generar y llamar la mutation en el formulario del chat.
-    - Terminar de gestionar los posibles errores en las distintas llamadas.
+    - Generar un nuevo nombre para cada chat, dependiendo del tema de conversación con la AI.
